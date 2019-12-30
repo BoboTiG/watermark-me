@@ -1,3 +1,8 @@
+# Specific to the project
+*-w.jpg
+*-wo.jpg
+
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
