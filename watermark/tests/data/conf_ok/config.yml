@@ -1,0 +1,5 @@
+extensions:
+  - '**/*.jpg'
+  - '**/*.png'
+font: data/URWChanceryL-MediItal.ttf
+opacity: 0.25
