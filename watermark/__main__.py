@@ -9,13 +9,21 @@ If that URL should fail, try contacting the author.
 """
 import sys
 
+from PyQt5.QtWidgets import QApplication
 from watermark.conf import save_config
-from watermark.gui import Application
+from watermark.gui.app import MainWindow
+
+
+def main() -> int:
+    """Entry point."""
+    try:
+        app = QApplication([])
+        window = MainWindow()
+        window.show()
+        return app.exec_()
+    finally:
+        save_config()
 
 
 if __name__ == "__main__":
-    app = Application()
-    try:
-        sys.exit(app.exec_())
-    finally:
-        save_config()
+    sys.exit(main())

@@ -30,9 +30,12 @@ def default_font() -> str:
 def default_config() -> Options:
     """Get default options."""
     return {
-        "extensions": ("**/*.jpg", "**/*.png"),
+        "extensions": ("jpg", "png"),
         "font": default_font(),
         "opacity": 0.25,
+        "picture": "",
+        "text": "www.arresto-momentum.com",
+        "update": True,
     }
 
 
@@ -52,8 +55,12 @@ def read_config(folder: str = CONF_DIR) -> SimpleNamespace:
     config = {**default_config(), **file_config}
 
     # Ensure the font file is correct, fallback on the default one on any issue
-    if not isfile(config.get("font", "")):
+    if not isfile(config["font"]):
         config["font"] = default_font()
+
+    # Ensure the picture exists
+    if not isfile(config["picture"]):
+        config["picture"] = ""
 
     return SimpleNamespace(**config)
 

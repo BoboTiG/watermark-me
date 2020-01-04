@@ -79,7 +79,7 @@ def test_apply_watermark(tmp_path, location, picture, png):
     paths.append(folder)
 
     text = "www.arresto-momentum.com"
-    apply_watermarks(paths, text=text, picture=picture)
+    list(apply_watermarks(paths, text=text, picture=picture))
 
     for file in root.glob("**/*.png"):
         assert guess_output(file).is_file()
