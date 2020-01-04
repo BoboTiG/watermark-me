@@ -9,21 +9,20 @@ If that URL should fail, try contacting the author.
 """
 import logging
 from pathlib import Path
-from typing import Any, List
+from typing import Any, Generator, List, Optional, Tuple
 
 from PIL import Image, ImageDraw, ImageEnhance, ImageFont
 
 from .conf import CONF
+from .utils import guess_output
 
 
-def add_watermark(image: Path, text: str = "", picture: str = "") -> Image:
+def add_watermark(image: Path, text: str = "", picture: str = "") -> Optional[Path]:
     """Add a given picture *watermark* and/or a given *text* to a given *image*
     using the specified *opacity*.
     Source: https://gist.github.com/makmac213/a4ab09f5a042c5477037
     """
-    # A new file will be created with the "-w" letters appended to the original name
-    # ("w" for "watermarked")
-    output = image.with_name(f"{image.stem}-w.jpg")
+    output = guess_output(image)
 
     # We should not erase old work, stop here.
     if output.is_file():
@@ -45,7 +44,7 @@ def add_watermark(image: Path, text: str = "", picture: str = "") -> Image:
         img = add_picture_watermark(img, picture)
 
     img.save(output, "JPEG")
-    return img
+    return output
 
 
 def add_picture_watermark(img: Image, watermark: str) -> Image:
@@ -110,11 +109,14 @@ def add_text_watermark(img: Image, watermark: str) -> Image:
     return Image.composite(watermark_img, img, watermark_img)
 
 
-def apply_watermarks(paths: List[Path], text: str, picture: str, **kwargs: Any) -> None:
+def apply_watermarks(
+    paths: List[Path], text: str, picture: str, **kwargs: Any
+) -> Generator[Tuple[Path, Optional[Path]], None, None]:
     """Apply watermark(s) on given files."""
     for path in paths:
         if path.is_file():
-            add_watermark(path, text=text, picture=picture)
+            yield path, add_watermark(path, text=text, picture=picture)
         elif path.is_dir():
-            for filters in CONF.extensions:
-                apply_watermarks(list(path.glob(filters)), text=text, picture=picture)
+            for ext in CONF.extensions:
+                for file in path.glob(f"**/*.{ext}"):
+                    yield file, add_watermark(file, text=text, picture=picture)
