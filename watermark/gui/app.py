@@ -40,8 +40,10 @@ class MainWindow(QMainWindow):
     def __init__(self) -> None:
         super().__init__()
 
+        self.res = Path(__file__).parent.parent / "res"
+
         self.setWindowTitle(TITLE)
-        # self.setWindowIcon(icon)
+        self.setWindowIcon(QIcon(str(self.res / "logo.svg")))
 
         # Little trick here!
         #
@@ -69,7 +71,6 @@ class MainWindow(QMainWindow):
         self.timer.timeout.connect(lambda: None)
         self.timer.start(100)
 
-        self.res = Path(__file__).parent.parent / "res"
         self.stats = {"count": 0, "size_before": 0, "size_after": 0}
 
         self._settings = Settings()
@@ -99,6 +100,7 @@ class MainWindow(QMainWindow):
 
         if path:
             self.picture.setText(path)
+            CONF.picture = path
 
     def _status_bar(self) -> None:
         """Create the status bar."""

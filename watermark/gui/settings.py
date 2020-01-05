@@ -37,10 +37,10 @@ class Settings(QDialog):
     def __init__(self) -> None:
         super().__init__()
 
-        # self.setWindowTitle()
-        # self.setWindowIcon()
-
         self.res = Path(__file__).parent.parent / "res"
+
+        self.setWindowTitle("Settings")
+        self.setWindowIcon(QIcon(str(self.res / "logo.svg")))
 
         layout = QVBoxLayout()
 

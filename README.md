@@ -26,3 +26,7 @@ pre-commit install
 python -m pip install -U --user tox
 tox
 ```
+
+## Credit
+
+Icon made by srip from [www.flaticon.com](https://www.flaticon.com/free-icon/optimize_2344561).
