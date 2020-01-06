@@ -23,8 +23,8 @@ def test_watermark_both(tmp_path, picture, png):
     output = image.with_name("text-and-picture-w.jpg")
     assert output.is_file()
 
-    # Calling twice should return nothing as the file was already processed
-    assert add_watermark(image, text=text, picture=picture) is None
+    # Calling twice should return the already processed file
+    assert add_watermark(image, text=text, picture=picture)
 
 
 def test_watermark_picture(tmp_path, picture, png):
