@@ -1,5 +1,7 @@
 # Watermark GUI
 
+[![Build Status](https://travis-ci.org/BoboTiG/watermark-me.svg?branch=master)](https://travis-ci.org/BoboTiG/watermark-me)
+
 GUI to watermark your pictures with text and/or another picture.
 
 Installation:
