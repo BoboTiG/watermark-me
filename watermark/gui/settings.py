@@ -44,6 +44,8 @@ class Settings(QDialog):
 
         layout = QVBoxLayout()
 
+        self.conf = type(CONF)(**vars(CONF).copy())
+
         # Add a line by option
         for idx, (option, value) in enumerate(vars(CONF).items()):
             if option in OPTIONS_TO_SKIP:
@@ -73,24 +75,24 @@ class Settings(QDialog):
             if value:
                 data_obj.setCheckState(Qt.Checked)
             data_obj.stateChanged.connect(
-                lambda state: setattr(CONF, option, bool(state))
+                lambda state: setattr(self.conf, option, bool(state))
             )
         elif isinstance(value, float):
             data_obj = QLineEdit(str(value))
             data_obj.setInputMask("0.00")
             data_obj.textChanged.connect(
-                lambda text: setattr(CONF, option, float(text))
+                lambda text: setattr(self.conf, option, float(text))
             )
         elif isinstance(value, list):
             data_obj = QLineEdit(" ".join(value))
             data_obj.setClearButtonEnabled(True)
             data_obj.textChanged.connect(
-                lambda text: setattr(CONF, option, text.split(" "))
+                lambda text: setattr(self.conf, option, text.split(" "))
             )
         elif isinstance(value, str):
             data_obj = QLineEdit(value)
             data_obj.setClearButtonEnabled(True)
-            data_obj.textChanged.connect(lambda text: setattr(CONF, option, text))
+            data_obj.textChanged.connect(lambda text: setattr(self.conf, option, text))
         else:
             data_obj = QLineEdit(f"{type(value)} is not yet handled.")
             data_obj.setReadOnly(True)
@@ -111,6 +113,9 @@ class Settings(QDialog):
 
     def apply_changes(self) -> None:
         """Save configuration changes."""
+        for option, value in vars(self.conf).items():
+            setattr(CONF, option, value)
+
         save_config()
 
     def choose_font(self) -> str:
