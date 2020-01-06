@@ -11,6 +11,8 @@ Installation:
 python3 -m pip install watermark
 ```
 
+To enable JPG optimizations, you will need a [Tinify API key](https://Tinify.com/developers) (free).
+
 ## Hacking
 
 ```bash
