@@ -3,6 +3,7 @@
 [![Build Status](https://travis-ci.org/BoboTiG/watermark-me.svg?branch=master)](https://travis-ci.org/BoboTiG/watermark-me)
 
 GUI to watermark your pictures with text and/or another picture.
+Code name: Colossos.
 
 Installation:
 
@@ -29,6 +30,8 @@ python -m pip install -U --user tox
 tox
 ```
 
-## Credit
+## Credits
 
 Icon made by srip from [www.flaticon.com](https://www.flaticon.com/free-icon/optimize_2344561).
+
+Tests data (logo and font) are used with the blessing of the creator of [Arresto Momentum](https://www.arresto-momentum.com/).
