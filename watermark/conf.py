@@ -34,7 +34,7 @@ def default_config() -> Options:
         "font": default_font(),
         "opacity": 0.25,
         "picture": "",
-        "text": "www.arresto-momentum.com",
+        "text": "",
         "update": True,
     }
 
