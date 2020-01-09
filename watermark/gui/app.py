@@ -183,7 +183,7 @@ class MainWindow(QMainWindow):
         layout_picture = QHBoxLayout()
         lbl_picture = QLabel("Icône")
         self.picture = QLineEdit(CONF.picture)
-        self.picture.setReadOnly(True)
+        self.picture.setClearButtonEnabled(True)
         btn_choose_file = QPushButton(QIcon(str(self.res / "open.svg")), "Choisir")
         btn_choose_file.setFlat(True)
         btn_choose_file.clicked.connect(self._select_one_file)
