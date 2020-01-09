@@ -27,7 +27,7 @@ def add_watermark(image: Path, text: str = "", picture: str = "") -> Optional[Pa
     # We should not erase old work, stop here.
     if output.is_file():
         logging.info(f"{image} already processed")
-        return None
+        return output
 
     try:
         with image.open("rb") as finput:

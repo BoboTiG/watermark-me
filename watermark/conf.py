@@ -33,8 +33,10 @@ def default_config() -> Options:
         "extensions": ("jpg", "png"),
         "font": default_font(),
         "opacity": 0.25,
+        "optimize": False,
         "picture": "",
-        "text": "www.arresto-momentum.com",
+        "text": "",
+        "tinify_key": "",
         "update": True,
     }
 

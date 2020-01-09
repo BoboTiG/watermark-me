@@ -9,7 +9,7 @@ If that URL should fail, try contacting the author.
 """
 from pathlib import Path
 
-from PyQt5.QtCore import QEvent, QTimer
+from PyQt5.QtCore import QEvent, QTimer, QCoreApplication
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import (
     QAction,
@@ -27,11 +27,14 @@ from PyQt5.QtWidgets import (
     QWidget,
     qApp,
 )
+import tinify
 
 from .settings import Settings
 from ..conf import CONF
 from ..constants import TITLE
+from ..optimizer import optimize, validate_key
 from ..watermark import apply_watermarks
+from ..utils import sizeof_fmt
 
 
 class MainWindow(QMainWindow):
@@ -71,24 +74,43 @@ class MainWindow(QMainWindow):
         self.timer.timeout.connect(lambda: None)
         self.timer.start(100)
 
+        # Keep track of some metrics
         self.stats = {"count": 0, "size_before": 0, "size_after": 0}
 
-        self._settings = Settings()
+        # Used to check if picture optimization is enabled and the provided key valid
+        self._use_optimization = None
+        self._old_key = None
+        self._old_state = None
 
+        # Init the GUI
+        self._settings = Settings()
         self._toolbar()
         self.addToolBar(self.toolbar)
-
         self._status_bar()
         self.setStatusBar(self.status_bar)
-
+        self._status_msg()
         self._window()
-        self._button_ok_state()
+        self.button_ok_state()
 
-    def _button_ok_state(self) -> None:
+    @property
+    def use_optimization(self) -> bool:
+        """Check if picture optimization is enabled and valid."""
+        if (
+            self._use_optimization is None
+            or CONF.tinify_key != self._old_key
+            or CONF.optimize != self._old_state
+        ):
+            self._old_key = CONF.tinify_key
+            self._old_state = CONF.optimize
+            self._use_optimization = CONF.optimize and validate_key(self._old_key)
+        return self._use_optimization
+
+    def button_ok_state(self) -> None:
         """Handle the state of the OK button. It should be enabled when particular criterias are met."""
 
         self.buttons.setEnabled(
-            bool(self.text.text() or self.picture) and self.paths_list.count() > 0
+            bool(self.text.text() or self.picture.text())
+            and self.paths_list.count() > 0
         )
 
     def _select_one_file(self) -> None:
@@ -109,7 +131,13 @@ class MainWindow(QMainWindow):
 
     def _status_msg(self) -> None:
         """Display statistics in the status bar."""
-        msg = str(self.stats["count"])
+        win = self.stats["size_before"] - self.stats["size_after"]
+        msg = f"{self.stats['count']} fichiers traité(s), {sizeof_fmt(win, suffix='o')} gagnés"
+
+        if self.use_optimization:
+            # Free account (500 compression / months)
+            msg += f" [crédits restants : {500 - tinify.compression_count}]"
+
         self.status_bar.showMessage(msg)
 
     def _toolbar(self) -> QToolBar:
@@ -155,7 +183,7 @@ class MainWindow(QMainWindow):
         layout_picture = QHBoxLayout()
         lbl_picture = QLabel("Icône")
         self.picture = QLineEdit(CONF.picture)
-        self.picture.setReadOnly(True)
+        self.picture.setClearButtonEnabled(True)
         btn_choose_file = QPushButton(QIcon(str(self.res / "open.svg")), "Choisir")
         btn_choose_file.setFlat(True)
         btn_choose_file.clicked.connect(self._select_one_file)
@@ -165,18 +193,18 @@ class MainWindow(QMainWindow):
         layout.insertLayout(2, layout_picture)
 
         # Files list
-        self.paths_list = MyListWidget()
+        self.paths_list = DroppableQList(self)
         layout.addWidget(self.paths_list)
 
         # Buttons
         self.buttons = QDialogButtonBox()
         self.buttons.setStandardButtons(QDialogButtonBox.Ok)
-        self.buttons.clicked.connect(self._watermark_everything)
+        self.buttons.clicked.connect(self._process_all)
         layout.addWidget(self.buttons)
 
         self.resize(400, 400)
 
-    def _watermark_everything(self) -> None:
+    def _process_all(self) -> None:
         """Here we gooo!"""
 
         CONF.text = self.text.text()
@@ -185,28 +213,55 @@ class MainWindow(QMainWindow):
         paths = [
             Path(self.paths_list.item(i).text()) for i in range(self.paths_list.count())
         ]
-        if paths:
-            for path_orig, path_new in apply_watermarks(paths, CONF.text, CONF.picture):
-                if not path_new:
-                    continue
+        if not paths:
+            return
 
-                self.stats["count"] += 1
-                self.stats["size_before"] += path_orig.stat().st_size
-                self.stats["size_after"] += path_new.stat().st_size
-                self._status_msg()
+        # Add watermark(s) to all files
+        for path_orig, path_new in apply_watermarks(paths, CONF.text, CONF.picture):
+            if not path_new:
+                continue
 
-            self.paths_list.clear()
+            # Optimize the picture
+            if self.use_optimization:
+                path_new_optimized = optimize(path_new)
+                if path_new_optimized:
+                    # Delete the "-w.jpg"
+                    path_new.unlink()
+                    # Keep the new "-wo.jpg"
+                    path_new = path_new_optimized
 
-        self._button_ok_state()
+            # Update statistics
+            self.stats["count"] += 1
+            self.stats["size_before"] += path_orig.stat().st_size
+            self.stats["size_after"] += path_new.stat().st_size
+
+            # Update the status bar message
+            self._status_msg()
+            QCoreApplication.processEvents()  # Important, keep it!
+
+        # Empty the paths to handle
+        self.paths_list.clear()
+
+        # And update the OK button state
+        self.button_ok_state()
 
 
-class MyListWidget(QListWidget):
-    def __init__(self) -> None:
+class DroppableQList(QListWidget):
+    def __init__(self, parent: MainWindow) -> None:
         super().__init__()
+
+        self.parent = parent
+
+        # Accept drag'n drop
         self.setAcceptDrops(True)
+
+        # Automatically sort the list
         self.setSortingEnabled(True)
 
     def dropEvent(self, event: QEvent) -> None:
         for url in event.mimeData().urls():
             self.addItem(url.path())
             event.acceptProposedAction()
+
+            # Check the OK button, it may need to be enabled
+            self.parent.button_ok_state()
