@@ -31,7 +31,7 @@ import tinify
 
 from .settings import Settings
 from ..conf import CONF
-from ..constants import TITLE
+from ..constants import RES_DIR, TITLE
 from ..optimizer import optimize, validate_key
 from ..watermark import apply_watermarks
 from ..utils import sizeof_fmt
@@ -43,10 +43,8 @@ class MainWindow(QMainWindow):
     def __init__(self) -> None:
         super().__init__()
 
-        self.res = Path(__file__).parent.parent / "res"
-
         self.setWindowTitle(TITLE)
-        self.setWindowIcon(QIcon(str(self.res / "logo.svg")))
+        self.setWindowIcon(QIcon(str(RES_DIR / "logo.svg")))
 
         # Little trick here!
         #
@@ -146,14 +144,14 @@ class MainWindow(QMainWindow):
 
         # Icon: settings
         settings_action = QAction(
-            QIcon(str(self.res / "settings.svg")), "Settings", self
+            QIcon(str(RES_DIR / "settings.svg")), "Settings", self
         )
         settings_action.setShortcut("Ctrl+S")
         settings_action.triggered.connect(self._settings.exec_)
         self.toolbar.addAction(settings_action)
 
         # Icon: exit
-        exit_action = QAction(QIcon(str(self.res / "exit.svg")), "Exit", self)
+        exit_action = QAction(QIcon(str(RES_DIR / "exit.svg")), "Exit", self)
         exit_action.setShortcut("Ctrl+Q")
         exit_action.triggered.connect(qApp.quit)
         self.toolbar.addAction(exit_action)
@@ -184,7 +182,7 @@ class MainWindow(QMainWindow):
         lbl_picture = QLabel("Icône")
         self.picture = QLineEdit(CONF.picture)
         self.picture.setClearButtonEnabled(True)
-        btn_choose_file = QPushButton(QIcon(str(self.res / "open.svg")), "Choisir")
+        btn_choose_file = QPushButton(QIcon(str(RES_DIR / "open.svg")), "Choisir")
         btn_choose_file.setFlat(True)
         btn_choose_file.clicked.connect(self._select_one_file)
         layout_picture.addWidget(lbl_picture)

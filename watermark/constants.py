@@ -7,12 +7,14 @@ You can always get the latest version of this module at:
     https://github.com/BoboTiG/watermark-me
 If that URL should fail, try contacting the author.
 """
-from sys import platform
+import sys
+from pathlib import Path
+
 
 # Current OS
-LINUX = platform == "linux"
-MAC = platform == "darwin"
-WINDOWS = platform == "win32"
+LINUX = sys.platform == "linux"
+MAC = sys.platform == "darwin"
+WINDOWS = sys.platform == "win32"
 
 # The company name
 COMPANY = "Schoentgen Inc."
@@ -28,3 +30,13 @@ elif MAC:
     CONF_DIR = f"~/.{PRODUCT}"
 elif WINDOWS:
     CONF_DIR = f"%LOCALAPPDATA%/{COMPANY}/{PRODUCT}"
+
+# Data and resources folders
+if hasattr(sys, "frozen"):
+    # PyInstaller
+    DATA_DIR = Path(getattr(sys, "_MEIPASS")) / "data"
+    RES_DIR = Path(getattr(sys, "_MEIPASS")) / "res"
+else:
+    # None and Nuitka
+    DATA_DIR = Path(__file__).parent / "data"
+    RES_DIR = Path(__file__).parent / "res"
