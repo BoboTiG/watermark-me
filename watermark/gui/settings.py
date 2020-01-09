@@ -8,7 +8,6 @@ You can always get the latest version of this module at:
 If that URL should fail, try contacting the author.
 """
 
-from pathlib import Path
 from typing import Any
 
 from PyQt5.QtCore import Qt
@@ -26,6 +25,7 @@ from PyQt5.QtWidgets import (
 )
 
 from ..conf import CONF, save_config
+from ..constants import RES_DIR
 
 
 OPTIONS_TO_SKIP = {"picture", "text"}
@@ -37,10 +37,8 @@ class Settings(QDialog):
     def __init__(self) -> None:
         super().__init__()
 
-        self.res = Path(__file__).parent.parent / "res"
-
         self.setWindowTitle("Settings")
-        self.setWindowIcon(QIcon(str(self.res / "logo.svg")))
+        self.setWindowIcon(QIcon(str(RES_DIR / "logo.svg")))
 
         layout = QVBoxLayout()
 
@@ -103,7 +101,7 @@ class Settings(QDialog):
             data_obj.setClearButtonEnabled(False)
             data_obj.setReadOnly(True)
 
-            icon = QIcon(str(self.res / "open.svg"))
+            icon = QIcon(str(RES_DIR / "open.svg"))
             select = QPushButton(icon, "Choisir", self)
             select.setFlat(True)
             select.clicked.connect(self.choose_font)

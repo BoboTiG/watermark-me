@@ -14,12 +14,13 @@ from pathlib import Path
 from typing import Union
 
 import pytest
+from watermark.constants import DATA_DIR
 
 
 @pytest.fixture(scope="session")
 def location() -> Path:
     """Return the folder containing test files."""
-    return Path(__file__).parent / "data"
+    return DATA_DIR.parent / "tests" / "data"
 
 
 @pytest.fixture(scope="session")

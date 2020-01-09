@@ -14,7 +14,7 @@ from typing import Any, Dict
 
 import yaml
 
-from .constants import CONF_DIR
+from .constants import CONF_DIR, DATA_DIR
 
 
 Options = Dict[str, Any]
@@ -22,9 +22,7 @@ Options = Dict[str, Any]
 
 def default_font() -> str:
     """Get the default font file."""
-    here = Path(__file__).parent / "data"
-    font = here / "URWChanceryL-MediItal.ttf"
-    return str(font)
+    return str(DATA_DIR / "URWChanceryL-MediItal.ttf")
 
 
 def default_config() -> Options:
