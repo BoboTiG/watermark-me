@@ -31,7 +31,7 @@ import tinify
 
 from .settings import Settings
 from ..conf import CONF
-from ..constants import RES_DIR, TITLE
+from ..constants import RES_DIR, TITLE, WINDOWS
 from ..optimizer import optimize, validate_key
 from ..watermark import apply_watermarks
 from ..utils import sizeof_fmt
@@ -80,6 +80,9 @@ class MainWindow(QMainWindow):
         self._old_key = None
         self._old_state = None
 
+        if CONF.update:
+            self._check_for_update()
+
         # Init the GUI
         self._settings = Settings()
         self._toolbar()
@@ -111,6 +114,20 @@ class MainWindow(QMainWindow):
             and self.paths_list.count() > 0
         )
 
+    def _check_for_update(self) -> None:
+        """Check for a new update."""
+        if not WINDOWS:
+            return
+
+        from .. import __version__
+        from ..updater.windows import Updater
+
+        updater = Updater()
+        try:
+            updater.check(__version__)
+        except Exception:
+            self._status_msg("Erreur de MàJ automatique")
+
     def _select_one_file(self) -> None:
         """Choose an image to use as a watermark picture."""
         image = "Image (*.png *.jpg *.bmp)"
@@ -127,14 +144,15 @@ class MainWindow(QMainWindow):
         self.status_bar = QStatusBar()
         self.status_bar.setSizeGripEnabled(False)
 
-    def _status_msg(self) -> None:
+    def _status_msg(self, msg: str = "") -> None:
         """Display statistics in the status bar."""
-        win = self.stats["size_before"] - self.stats["size_after"]
-        msg = f"{self.stats['count']} fichiers traité(s), {sizeof_fmt(win, suffix='o')} gagnés"
+        if not msg:
+            win = self.stats["size_before"] - self.stats["size_after"]
+            msg = f"{self.stats['count']} fichiers traité(s), {sizeof_fmt(win, suffix='o')} gagnés"
 
-        if self.use_optimization:
-            # Free account (500 compression / months)
-            msg += f" [crédits restants : {500 - tinify.compression_count}]"
+            if self.use_optimization:
+                # Free account (500 compression / months)
+                msg += f" [crédits restants : {500 - tinify.compression_count}]"
 
         self.status_bar.showMessage(msg)
 
