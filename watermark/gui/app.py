@@ -218,7 +218,7 @@ class MainWindow(QMainWindow):
         self.buttons.clicked.connect(self._process_all)
         layout.addWidget(self.buttons)
 
-        self.resize(400, 400)
+        self.resize(640, 480)
 
     def _process_all(self) -> None:
         """Here we gooo!"""
