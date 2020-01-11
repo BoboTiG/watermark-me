@@ -61,7 +61,7 @@ class Settings(QDialog):
         self.resize(400, 400)
 
     def add_option(self, option: str, value: Any) -> QHBoxLayout:
-        """"""
+        """Add a new row with a given option and its value."""
         layout = QHBoxLayout()
 
         label = QLabel(option)
@@ -81,7 +81,7 @@ class Settings(QDialog):
             data_obj.textChanged.connect(
                 lambda text: setattr(self.conf, option, float(text))
             )
-        elif isinstance(value, list):
+        elif isinstance(value, (list, tuple)):
             data_obj = QLineEdit(" ".join(value))
             data_obj.setClearButtonEnabled(True)
             data_obj.textChanged.connect(
