@@ -264,7 +264,7 @@ class MainWindow(QMainWindow):
 
 class DroppableQList(QListWidget):
     def __init__(self, parent: MainWindow) -> None:
-        super().__init__()
+        super().__init__(parent)
 
         self.parent = parent
 
@@ -274,10 +274,27 @@ class DroppableQList(QListWidget):
         # Automatically sort the list
         self.setSortingEnabled(True)
 
-    def dropEvent(self, event: QEvent) -> None:
-        for url in event.mimeData().urls():
-            self.addItem(url.path())
-            event.acceptProposedAction()
+    def exists(self, path: str) -> bool:
+        return any(self.item(i).text() == path for i in range(self.count()))
 
-            # Check the OK button, it may need to be enabled
-            self.parent.button_ok_state()
+    def dragEnterEvent(self, event: QEvent) -> None:
+        if event.mimeData().hasUrls:
+            event.accept()
+
+    def dragMoveEvent(self, event: QEvent) -> None:
+        if event.mimeData().hasUrls:
+            event.accept()
+
+    def dropEvent(self, event: QEvent) -> None:
+        if not event.mimeData().hasUrls:
+            return
+
+        for url in event.mimeData().urls():
+            path = url.toLocalFile()
+            if self.exists(path):
+                continue
+            self.addItem(path)
+        event.accept()
+
+        # Check the OK button, it may need to be enabled
+        self.parent.button_ok_state()
