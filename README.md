@@ -32,6 +32,13 @@ python -m pip install -U --user tox
 tox
 ```
 
+## Installers
+
+### Windows
+
+Double-click on `build-win.bat` (think to update environment variables first).
+
+
 ## Credits
 
 Icon made by srip from [www.flaticon.com](https://www.flaticon.com/free-icon/optimize_2344561).

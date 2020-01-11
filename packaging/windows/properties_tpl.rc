@@ -1,0 +1,28 @@
+VSVersionInfo(
+  ffi=FixedFileInfo(
+    filevers={version_tuple},
+    prodvers={version_tuple},
+    mask=0x3f,
+    flags=0x0,
+    OS=0x40004,
+    fileType=0x1,
+    subtype=0x0,
+    date=(0, 0)
+    ),
+  kids=[
+    StringFileInfo(
+      [
+      StringTable(
+        '040904B0',
+        [StringStruct('CompanyName', 'Schoentgen Inc'),
+        StringStruct('FileDescription', 'Watermark me!'),
+        StringStruct('FileVersion', '{version}'),
+        StringStruct('InternalName', 'watermark'),
+        StringStruct('LegalCopyright', '\xa9 Schoentgen Inc'),
+        StringStruct('OriginalFilename', 'watermark.exe'),
+        StringStruct('ProductName', 'Watermark me!'),
+        StringStruct('ProductVersion', '{version}')])
+      ]),
+    VarFileInfo([VarStruct('Translation', [0, 0])])
+  ]
+)

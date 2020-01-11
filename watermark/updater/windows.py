@@ -29,7 +29,7 @@ class Updater(BaseUpdater):
         """
 
         # Using ping instead of timeout to wait 5 seconds
-        cmd = f'ping 127.0.0.1 -n 6 > nul && "{filename}" /verysilent /start=auto'
+        cmd = f'ping 127.0.0.1 -n 6 > nul && "{filename}" /verysilent'
         logging.info("Launching the auto-updater in 5 seconds ...")
         subprocess.Popen(cmd, shell=True, close_fds=True)
 
