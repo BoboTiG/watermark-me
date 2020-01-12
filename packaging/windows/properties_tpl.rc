@@ -18,7 +18,7 @@ VSVersionInfo(
         StringStruct('FileDescription', 'Watermark me!'),
         StringStruct('FileVersion', '{version}'),
         StringStruct('InternalName', 'watermark'),
-        StringStruct('LegalCopyright', '\xa9 Schoentgen Inc'),
+        StringStruct('LegalCopyright', '\xa9 2019-2020 Schoentgen Inc'),
         StringStruct('OriginalFilename', 'watermark.exe'),
         StringStruct('ProductName', 'Watermark me!'),
         StringStruct('ProductVersion', '{version}')])
