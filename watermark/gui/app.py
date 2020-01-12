@@ -9,17 +9,18 @@ If that URL should fail, try contacting the author.
 """
 from pathlib import Path
 
-from PyQt5.QtCore import QEvent, QTimer, QCoreApplication
-from PyQt5.QtGui import QIcon
+from PyQt5.QtCore import QEvent, QT_VERSION_STR, QTimer, QCoreApplication
+from PyQt5.QtGui import QIcon, QPixmap
 from PyQt5.QtWidgets import (
     QAction,
     QDialogButtonBox,
     QFileDialog,
     QHBoxLayout,
-    QMainWindow,
     QLabel,
     QLineEdit,
     QListWidget,
+    QMainWindow,
+    QMessageBox,
     QPushButton,
     QStatusBar,
     QToolBar,
@@ -30,8 +31,9 @@ from PyQt5.QtWidgets import (
 import tinify
 
 from .settings import Settings
+from .. import __version__
 from ..conf import CONF
-from ..constants import RES_DIR, TITLE, WINDOWS
+from ..constants import COMPANY, RES_DIR, TITLE, WINDOWS
 from ..optimizer import optimize, validate_key
 from ..watermark import apply_watermarks
 from ..utils import sizeof_fmt
@@ -164,13 +166,18 @@ class MainWindow(QMainWindow):
         settings_action = QAction(
             QIcon(str(RES_DIR / "settings.svg")), "Settings", self
         )
-        settings_action.setShortcut("Ctrl+S")
         settings_action.triggered.connect(self._settings.exec_)
         self.toolbar.addAction(settings_action)
 
+        # Icon: about
+        about_action = QAction(QIcon(str(RES_DIR / "about.svg")), "About", self)
+        about_action.triggered.connect(show_about)
+        self.toolbar.addAction(about_action)
+
+        self.toolbar.addSeparator()
+
         # Icon: exit
         exit_action = QAction(QIcon(str(RES_DIR / "exit.svg")), "Exit", self)
-        exit_action.setShortcut("Ctrl+Q")
         exit_action.triggered.connect(qApp.quit)
         self.toolbar.addAction(exit_action)
 
@@ -298,3 +305,31 @@ class DroppableQList(QListWidget):
 
         # Check the OK button, it may need to be enabled
         self.parent.button_ok_state()
+
+
+def show_about() -> None:
+    """display a simple "About" dialog."""
+    icon = str(RES_DIR / "logo.svg")
+
+    msg = QMessageBox()
+    msg.setWindowTitle(f"About - {TITLE}")
+    msg.setWindowIcon(QIcon(icon))
+    msg.setIconPixmap(QPixmap(icon).scaledToWidth(64))
+
+    msg.setText(f"{TITLE} v{__version__}")
+    msg.setInformativeText(f"Codename: Colossos\n© 2019-2020 {COMPANY}")
+
+    from PIL import __version__ as pillow_version
+    from PyInstaller import __version__ as pyinstaller_version
+    from yaml import __version__ as pyaml_version
+
+    msg.setDetailedText(
+        f"Pillow v{pillow_version}\n"
+        f"PyInstaller v{pyinstaller_version}\n"
+        f"PyQt5 v{QT_VERSION_STR}\n"
+        f"PyYAML v{pyaml_version}\n"
+        f"Tinify v{tinify.__version__}"
+    )
+
+    msg.setStandardButtons(QMessageBox.Close)
+    msg.exec_()
