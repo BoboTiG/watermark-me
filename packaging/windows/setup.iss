@@ -29,7 +29,7 @@ AppPublisher={#MyAppPublisher}
 AppPublisherURL={#MyAppURL}
 AppSupportURL={#MyAppURL}
 AppUpdatesURL={#MyAppUpdatesURL}
-AppCopyright="© {#MyAppPublisher}"
+AppCopyright="© 2019-2020 {#MyAppPublisher}"
 
 ; Outputs
 OutputDir=../../dist
