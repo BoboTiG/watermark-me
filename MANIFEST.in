@@ -1,6 +1,9 @@
 # Include the default font
 include watermark/data/*.ttf
 
+# Include langs
+include watermark/data/i18n/*.json
+
 # Include tests files and data
 include watermark/tests/*.py
 recursive-include watermark/tests/data *.png *.yml

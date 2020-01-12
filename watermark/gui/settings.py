@@ -25,7 +25,8 @@ from PyQt5.QtWidgets import (
 )
 
 from ..conf import CONF, save_config
-from ..constants import RES_DIR
+from ..constants import RES_DIR, TITLE
+from ..translator import TR
 
 
 OPTIONS_TO_SKIP = {"picture", "text"}
@@ -37,7 +38,7 @@ class Settings(QDialog):
     def __init__(self) -> None:
         super().__init__()
 
-        self.setWindowTitle("Settings")
+        self.setWindowTitle(TR.get("TITLE_SETTINGS", [TITLE]))
         self.setWindowIcon(QIcon(str(RES_DIR / "logo.svg")))
 
         layout = QVBoxLayout()
@@ -102,7 +103,7 @@ class Settings(QDialog):
             data_obj.setReadOnly(True)
 
             icon = QIcon(str(RES_DIR / "open.svg"))
-            select = QPushButton(icon, "Choisir", self)
+            select = QPushButton(icon, TR.get("CHOOSE"), self)
             select.setFlat(True)
             select.clicked.connect(self.choose_font)
             layout.addWidget(select)
@@ -118,6 +119,7 @@ class Settings(QDialog):
 
     def choose_font(self) -> str:
         """Select a font file."""
+        title = TR.get("TITLE_SEL_FONT", [TITLE])
         ttf = "Font (*.ttf)"
-        path, _ = QFileDialog.getOpenFileName(caption="Select a font", filter=ttf)
+        path, _ = QFileDialog.getOpenFileName(caption=title, filter=ttf)
         return path

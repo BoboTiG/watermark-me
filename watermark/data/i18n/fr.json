@@ -1,0 +1,18 @@
+{
+    "BYTE": "o",
+    "CHOOSE": "Choisir",
+    "CODENAME": "Nom de code : %1",
+    "ICON": "Icône",
+    "LANGUAGE": "Français",
+    "STATISTICS": "%1 fichiers traité(s), %2 gagnés",
+    "STATISTICS_TINIFY": ", [Crédtits Tinify : %1]",
+    "TB_ABOUT": "À Propos",
+    "TB_EXIT": "Quitter",
+    "TB_SETTINGS": "Paramètres",
+    "TEXT": "Texte",
+    "TITLE_ABOUT": "À Propos - %1",
+    "TITLE_SETTINGS": "Paramètres - %1",
+    "TITLE_SEL_FONT": "Sélectionner une police de caractères - %1",
+    "TITLE_SEL_PICTURE": "Sélectionner une image - %1",
+    "UPDATE_ERROR": "Erreur de MàJ automatique"
+}
