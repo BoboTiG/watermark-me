@@ -3,6 +3,7 @@
 ## 0.1b2
 
 - [Windows] Set executables copyright years (closes #24)
+- GUI: add the About dialog box (closes #17)
 
 ## 0.1b1
 
