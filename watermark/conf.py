@@ -30,6 +30,7 @@ def default_config() -> Options:
     return {
         "extensions": ("jpg", "png"),
         "font": default_font(),
+        "lang": "",
         "opacity": 0.25,
         "optimize": False,
         "picture": "",

@@ -31,6 +31,7 @@ from PyQt5.QtWidgets import (
 import tinify
 
 from .settings import Settings
+from ..translator import TR
 from .. import __version__
 from ..conf import CONF
 from ..constants import COMPANY, RES_DIR, TITLE, WINDOWS
@@ -121,20 +122,19 @@ class MainWindow(QMainWindow):
         if not WINDOWS:
             return
 
-        from .. import __version__
         from ..updater.windows import Updater
 
         updater = Updater()
         try:
             updater.check(__version__)
         except Exception:
-            self._status_msg("Erreur de MàJ automatique")
+            self._status_msg(TR.get("UPDATE_ERROR"))
 
     def _select_one_file(self) -> None:
         """Choose an image to use as a watermark picture."""
         image = "Image (*.png *.jpg *.bmp)"
         path, _ = QFileDialog.getOpenFileName(
-            caption="Select a watermark picture", filter=image
+            caption=TR.get("TITLE_SEL_PICTURE", [TITLE]), filter=image
         )
 
         if path:
@@ -150,11 +150,10 @@ class MainWindow(QMainWindow):
         """Display statistics in the status bar."""
         if not msg:
             win = self.stats["size_before"] - self.stats["size_after"]
-            msg = f"{self.stats['count']} fichiers traité(s), {sizeof_fmt(win, suffix='o')} gagnés"
-
+            values = [str(self.stats["count"]), sizeof_fmt(win, suffix=TR.get("BYTE"))]
+            msg = TR.get("STATISTICS", values)
             if self.use_optimization:
-                # Free account (500 compression / months)
-                msg += f" [crédits restants : {500 - tinify.compression_count}]"
+                msg += TR.get("STATISTICS_TINIFY", [tinify.compression_count])
 
         self.status_bar.showMessage(msg)
 
@@ -164,28 +163,28 @@ class MainWindow(QMainWindow):
 
         # Icon: settings
         settings_action = QAction(
-            QIcon(str(RES_DIR / "settings.svg")), "Settings", self
+            QIcon(str(RES_DIR / "settings.svg")), TR.get("TB_SETTINGS"), self
         )
         settings_action.triggered.connect(self._settings.exec_)
         self.toolbar.addAction(settings_action)
 
         # Icon: about
-        about_action = QAction(QIcon(str(RES_DIR / "about.svg")), "About", self)
+        about_action = QAction(
+            QIcon(str(RES_DIR / "about.svg")), TR.get("TB_ABOUT"), self
+        )
         about_action.triggered.connect(show_about)
         self.toolbar.addAction(about_action)
 
         self.toolbar.addSeparator()
 
         # Icon: exit
-        exit_action = QAction(QIcon(str(RES_DIR / "exit.svg")), "Exit", self)
+        exit_action = QAction(QIcon(str(RES_DIR / "exit.svg")), TR.get("TB_EXIT"), self)
         exit_action.triggered.connect(qApp.quit)
         self.toolbar.addAction(exit_action)
 
     def _window(self) -> None:
         """Construct the main window."""
-
         layout = QVBoxLayout()
-        # left, top, right, bottom
 
         # The central widget
         wid = QWidget(self)
@@ -194,7 +193,7 @@ class MainWindow(QMainWindow):
 
         # 1st line: label + watermark text
         layout_text = QHBoxLayout()
-        lbl_text = QLabel("Texte")
+        lbl_text = QLabel(TR.get("TEXT"))
         layout.addWidget(lbl_text)
         self.text = QLineEdit(CONF.text)
         self.text.setClearButtonEnabled(True)
@@ -204,10 +203,12 @@ class MainWindow(QMainWindow):
 
         # 2nd line: label + watermark icon
         layout_picture = QHBoxLayout()
-        lbl_picture = QLabel("Icône")
+        lbl_picture = QLabel(TR.get("ICON"))
         self.picture = QLineEdit(CONF.picture)
         self.picture.setClearButtonEnabled(True)
-        btn_choose_file = QPushButton(QIcon(str(RES_DIR / "open.svg")), "Choisir")
+        btn_choose_file = QPushButton(
+            QIcon(str(RES_DIR / "open.svg")), TR.get("CHOOSE")
+        )
         btn_choose_file.setFlat(True)
         btn_choose_file.clicked.connect(self._select_one_file)
         layout_picture.addWidget(lbl_picture)
@@ -312,12 +313,13 @@ def show_about() -> None:
     icon = str(RES_DIR / "logo.svg")
 
     msg = QMessageBox()
-    msg.setWindowTitle(f"About - {TITLE}")
+    msg.setWindowTitle(TR.get("TITLE_ABOUT", [TITLE]))
     msg.setWindowIcon(QIcon(icon))
     msg.setIconPixmap(QPixmap(icon).scaledToWidth(64))
 
     msg.setText(f"{TITLE} v{__version__}")
-    msg.setInformativeText(f"Codename: Colossos\n© 2019-2020 {COMPANY}")
+    codename = TR.get("CODENAME", ["Colossos"])
+    msg.setInformativeText(f"{codename}\n© 2019-2020 {COMPANY}")
 
     from PIL import __version__ as pillow_version
     from PyInstaller import __version__ as pyinstaller_version

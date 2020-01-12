@@ -1,0 +1,18 @@
+{
+    "BYTE": "B",
+    "CHOOSE": "Choose",
+    "CODENAME": "Codename: %1",
+    "ICON": "Icon",
+    "LANGUAGE": "English",
+    "STATISTICS": "%1 file(s), %2 won",
+    "STATISTICS_TINIFY": ", [Tinify credits: %1]",
+    "TB_ABOUT": "About",
+    "TB_EXIT": "Exit",
+    "TB_SETTINGS": "Settings",
+    "TEXT": "Text",
+    "TITLE_ABOUT": "About - %1",
+    "TITLE_SETTINGS": "Settings - %1",
+    "TITLE_SEL_FONT": "Select a font - %1",
+    "TITLE_SEL_PICTURE": "Select a picture - %1",
+    "UPDATE_ERROR": "Auto-update error"
+}

@@ -4,6 +4,7 @@
 
 - [Windows] Set executables copyright years (closes #24)
 - GUI: add the About dialog box (closes #17)
+- Internationalization EN and FR (closes #8)
 
 ## 0.1b1
 
