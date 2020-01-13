@@ -161,6 +161,7 @@ class MainWindow(QMainWindow):
         """Create the toolbar."""
         self.toolbar = QToolBar()
         self.toolbar.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
+        self.toolbar.setMovable(False)
 
         # Icon: settings
         settings_action = QAction(
