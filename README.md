@@ -32,6 +32,11 @@ python -m pip install -U --user tox
 tox
 ```
 
+Tested OK on:
+- GNU/Linux Debian 10 (buster)
+- macOS 10.14.6 (Mojave)
+- Microsoft Windows 10
+
 ## Installers
 
 ### Windows
