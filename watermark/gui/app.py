@@ -9,7 +9,7 @@ If that URL should fail, try contacting the author.
 """
 from pathlib import Path
 
-from PyQt5.QtCore import QEvent, QT_VERSION_STR, QTimer, QCoreApplication
+from PyQt5.QtCore import QEvent, QT_VERSION_STR, QTimer, Qt, QCoreApplication
 from PyQt5.QtGui import QIcon, QPixmap
 from PyQt5.QtWidgets import (
     QAction,
@@ -160,6 +160,7 @@ class MainWindow(QMainWindow):
     def _toolbar(self) -> QToolBar:
         """Create the toolbar."""
         self.toolbar = QToolBar()
+        self.toolbar.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
 
         # Icon: settings
         settings_action = QAction(
