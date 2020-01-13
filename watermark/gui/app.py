@@ -321,16 +321,18 @@ def show_about() -> None:
     codename = TR.get("CODENAME", ["Colossos"])
     msg.setInformativeText(f"{codename}\n© 2019-2020 {COMPANY}")
 
+    from platform import python_implementation, python_version
     from PIL import __version__ as pillow_version
     from PyInstaller import __version__ as pyinstaller_version
     from yaml import __version__ as pyaml_version
 
     msg.setDetailedText(
-        f"Pillow v{pillow_version}\n"
-        f"PyInstaller v{pyinstaller_version}\n"
-        f"PyQt5 v{QT_VERSION_STR}\n"
-        f"PyYAML v{pyaml_version}\n"
-        f"Tinify v{tinify.__version__}"
+        f"{python_implementation()} {python_version()}\n"
+        f"Pillow {pillow_version}\n"
+        f"PyInstaller {pyinstaller_version}\n"
+        f"PyQt5 {QT_VERSION_STR}\n"
+        f"PyYAML {pyaml_version}\n"
+        f"Tinify {tinify.__version__}"
     )
 
     msg.setStandardButtons(QMessageBox.Close)
