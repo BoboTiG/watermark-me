@@ -5,6 +5,10 @@
 GUI to watermark your pictures with text and/or another picture.
 Code name: Colossos.
 
+![Watermark-me! main window][watermark-me-preview]
+
+[watermark-me-preview]: https://raw.githubusercontent.com/BoboTiG/watermark-me/master/preview.png
+
 Installation:
 
 ```bash
