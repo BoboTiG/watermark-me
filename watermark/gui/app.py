@@ -15,8 +15,8 @@ from PyQt5.QtWidgets import (
     QAction,
     QDialogButtonBox,
     QFileDialog,
+    QGroupBox,
     QHBoxLayout,
-    QLabel,
     QLineEdit,
     QListWidget,
     QMainWindow,
@@ -31,6 +31,7 @@ from PyQt5.QtWidgets import (
 import tinify
 
 from .settings import Settings
+from .utils import set_style
 from ..translator import TR
 from .. import __version__
 from ..conf import CONF
@@ -184,6 +185,55 @@ class MainWindow(QMainWindow):
         exit_action.triggered.connect(qApp.quit)
         self.toolbar.addAction(exit_action)
 
+    def _add_group_text(self) -> QGroupBox:
+        """Group box for the text watermark."""
+        groupbox = QGroupBox(TR.get("TEXT"))
+        vbox = QVBoxLayout()
+        groupbox.setLayout(vbox)
+
+        # The text watermark input
+        self.text = QLineEdit(CONF.text)
+        self.text.setPlaceholderText(TR.get("TEXT_PLACEHOLDER"))
+        self.text.setClearButtonEnabled(True)
+        set_style(self.text)
+        vbox.addWidget(self.text)
+
+        return groupbox
+
+    def _add_group_picture(self) -> QGroupBox:
+        """Group box for the picture watermark."""
+        groupbox = QGroupBox(TR.get("ICON"))
+        vbox = QHBoxLayout()
+        groupbox.setLayout(vbox)
+
+        # The watermark picture input
+        self.picture = QLineEdit(CONF.picture)
+        self.picture.setPlaceholderText(TR.get("ICON_PLACEHOLDER"))
+        self.picture.setClearButtonEnabled(True)
+        set_style(self.picture)
+        vbox.addWidget(self.picture)
+
+        # The button to choose a local file
+        btn_choose_file = QPushButton(
+            QIcon(str(RES_DIR / "open.svg")), TR.get("CHOOSE")
+        )
+        btn_choose_file.setFlat(True)
+        btn_choose_file.clicked.connect(self._select_one_file)
+        vbox.addWidget(btn_choose_file)
+
+        return groupbox
+
+    def _add_group_files_list(self) -> QGroupBox:
+        """Group box for the files list."""
+        groupbox = QGroupBox(TR.get("FILES"))
+        vbox = QHBoxLayout()
+        groupbox.setLayout(vbox)
+
+        self.paths_list = DroppableQList(self)
+        vbox.addWidget(self.paths_list)
+
+        return groupbox
+
     def _window(self) -> None:
         """Construct the main window."""
         layout = QVBoxLayout()
@@ -193,34 +243,9 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(wid)
         wid.setLayout(layout)
 
-        # 1st line: label + watermark text
-        layout_text = QHBoxLayout()
-        lbl_text = QLabel(TR.get("TEXT"))
-        layout.addWidget(lbl_text)
-        self.text = QLineEdit(CONF.text)
-        self.text.setClearButtonEnabled(True)
-        layout_text.addWidget(lbl_text)
-        layout_text.addWidget(self.text)
-        layout.insertLayout(1, layout_text)
-
-        # 2nd line: label + watermark icon
-        layout_picture = QHBoxLayout()
-        lbl_picture = QLabel(TR.get("ICON"))
-        self.picture = QLineEdit(CONF.picture)
-        self.picture.setClearButtonEnabled(True)
-        btn_choose_file = QPushButton(
-            QIcon(str(RES_DIR / "open.svg")), TR.get("CHOOSE")
-        )
-        btn_choose_file.setFlat(True)
-        btn_choose_file.clicked.connect(self._select_one_file)
-        layout_picture.addWidget(lbl_picture)
-        layout_picture.addWidget(self.picture)
-        layout_picture.addWidget(btn_choose_file)
-        layout.insertLayout(2, layout_picture)
-
-        # Files list
-        self.paths_list = DroppableQList(self)
-        layout.addWidget(self.paths_list)
+        layout.addWidget(self._add_group_text())
+        layout.addWidget(self._add_group_picture())
+        layout.addWidget(self._add_group_files_list())
 
         # Buttons
         self.buttons = QDialogButtonBox()
