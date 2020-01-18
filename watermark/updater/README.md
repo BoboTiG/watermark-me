@@ -21,7 +21,7 @@ Then, actions taken are OS-specific.
 
 #### Windows
 
-The only action to do is to install the new version by calling `watermark-x.y.z.exe /VERYSILENT /START=auto` from the temporary folder.
+The only action to do is to install the new version by calling `watermark-x.y.z.exe /SILENT` from the temporary folder.
 The installer will automagically:
 
 1. Stop the application;
