@@ -23,6 +23,9 @@ COMPANY = "Schoentgen Inc."
 PRODUCT = "watermark"
 TITLE = "Watermark me!"
 
+# Auto-update URL
+UPDATE_URL = "https://api.github.com/repos/BoboTiG/watermark-me/releases"
+
 # The default folder where to get/put the configuration file
 if LINUX:
     CONF_DIR = f"$XDG_CONFIG_HOME/{PRODUCT}"

@@ -17,12 +17,14 @@ from typing import Any, Dict, List
 import requests
 
 from .utils import get_update_status
+from ..constants import UPDATE_URL
 
 
 class BaseUpdater:
     """ Updater class for frozen application. """
 
-    def __init__(self) -> None:
+    def __init__(self, url: str = "") -> None:
+        self.url = url or UPDATE_URL
         self.versions: List[Dict[str, Any]] = []
         self.chunk_size = 8192
 
@@ -73,8 +75,7 @@ class BaseUpdater:
 
     def _fetch_versions(self) -> None:
         """ Fetch available versions. It sets `self.versions` on success. """
-        url = "https://api.github.com/repos/BoboTiG/watermark-me/releases"
-        with requests.get(url) as resp:
+        with requests.get(self.url) as resp:
             resp.raise_for_status()
             self.version = resp.json()
 

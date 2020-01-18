@@ -13,6 +13,7 @@
 - GUI: rework the settings window (closes #12)
 - GUI: fix the OK button state with no watermark text or picture
 - dev: move out tests requirements to their own files (closes #34)
+- Allow to use a custom auto-update URL
 
 ## 0.1b1
 
