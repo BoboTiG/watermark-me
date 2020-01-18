@@ -35,9 +35,6 @@ from ..constants import RES_DIR, TITLE
 from ..translator import TR
 
 
-OPTIONS_TO_SKIP = {"picture", "text"}
-
-
 class Settings(QDialog):
     """Settings window."""
 
