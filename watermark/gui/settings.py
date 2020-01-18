@@ -8,22 +8,28 @@ You can always get the latest version of this module at:
 If that URL should fail, try contacting the author.
 """
 
-from typing import Any
+from functools import partial
 
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import (
-    QCheckBox,
     QDialog,
     QDialogButtonBox,
     QFileDialog,
+    QGroupBox,
     QHBoxLayout,
     QLabel,
+    QLayout,
     QLineEdit,
     QPushButton,
+    QRadioButton,
+    QSlider,
+    QTabWidget,
     QVBoxLayout,
+    QWidget,
 )
 
+from .utils import set_style
 from ..conf import CONF, save_config
 from ..constants import RES_DIR, TITLE
 from ..translator import TR
@@ -41,15 +47,15 @@ class Settings(QDialog):
         self.setWindowTitle(TR.get("TITLE_SETTINGS", [TITLE]))
         self.setWindowIcon(QIcon(str(RES_DIR / "logo.svg")))
 
-        layout = QVBoxLayout()
-
         self.conf = type(CONF)(**vars(CONF).copy())
 
-        # Add a line by option
-        for idx, (option, value) in enumerate(vars(CONF).items()):
-            if option in OPTIONS_TO_SKIP:
-                continue
-            layout.insertLayout(idx, self.add_option(option, value))
+        layout = QVBoxLayout()
+        tabs = QTabWidget(self)
+        layout.addWidget(tabs)
+
+        tabs.addTab(self._tab_general(), TR.get("GENERAL"))
+        tabs.addTab(self._tab_watermark(), TR.get("WATERMARK"))
+        tabs.setCurrentIndex(1)
 
         # Buttons
         buttons = QDialogButtonBox()
@@ -61,54 +67,113 @@ class Settings(QDialog):
         self.setLayout(layout)
         self.resize(400, 400)
 
-    def add_option(self, option: str, value: Any) -> QHBoxLayout:
-        """Add a new row with a given option and its value."""
-        layout = QHBoxLayout()
+    def _on_lang_toggled(self, key: str, value: bool) -> None:
+        """Signal triggered when the lang radio buttons are toggled."""
+        if value:
+            self.conf.lang = key
 
-        label = QLabel(option)
-        layout.addWidget(label)
+    def _tab_general(self) -> QWidget:
+        """Generate the General tab."""
+        tab = QWidget()
+        layout = QVBoxLayout()
+        layout.setAlignment(Qt.AlignTop)
+        tab.setLayout(layout)
 
-        if isinstance(value, bool):
-            data_obj = QCheckBox()
-            data_obj.setTristate(False)
-            if value:
-                data_obj.setCheckState(Qt.Checked)
-            data_obj.stateChanged.connect(
-                lambda state: setattr(self.conf, option, bool(state))
-            )
-        elif isinstance(value, float):
-            data_obj = QLineEdit(str(value))
-            data_obj.setInputMask("0.00")
-            data_obj.textChanged.connect(
-                lambda text: setattr(self.conf, option, float(text))
-            )
-        elif isinstance(value, (list, tuple)):
-            data_obj = QLineEdit(" ".join(value))
-            data_obj.setClearButtonEnabled(True)
-            data_obj.textChanged.connect(
-                lambda text: setattr(self.conf, option, text.split(" "))
-            )
-        elif isinstance(value, str):
-            data_obj = QLineEdit(value)
-            data_obj.setClearButtonEnabled(True)
-            data_obj.textChanged.connect(lambda text: setattr(self.conf, option, text))
-        else:
-            data_obj = QLineEdit(f"{type(value)} is not yet handled.")
-            data_obj.setReadOnly(True)
+        # Lang
+        groupbox = QGroupBox(TR.get("LANG"))
+        layout.addWidget(groupbox)
+        box = QVBoxLayout()
+        # box.setAlignment(Qt.AlignHCenter)
+        box.setSizeConstraint(QLayout.SetMinAndMaxSize)
+        groupbox.setLayout(box)
+        for key, name in sorted(TR.langs.values()):
+            radio = QRadioButton(name)
+            box.addWidget(radio)
+            radio.toggled.connect(partial(self._on_lang_toggled, key))
+            if CONF.lang == key:
+                radio.setChecked(True)
 
-        layout.addWidget(data_obj)
+        # Auto-update
+        groupbox = QGroupBox(TR.get("UPDATE"))
+        layout.addWidget(groupbox)
+        groupbox.setCheckable(True)
+        groupbox.toggled.connect(lambda value: setattr(self.conf, "update", value))
+        groupbox.setChecked(CONF.update)
+        box = QVBoxLayout()
+        box.setSizeConstraint(QLayout.SetMinAndMaxSize)
+        groupbox.setLayout(box)
+        box.addWidget(QLabel(TR.get("UPDATE_INFO")))
 
-        if option == "font":
-            data_obj.setClearButtonEnabled(False)
-            data_obj.setReadOnly(True)
+        # Extensions
+        # TODO: to be done when someone needs it
 
-            icon = QIcon(str(RES_DIR / "open.svg"))
-            select = QPushButton(icon, TR.get("CHOOSE"), self)
-            select.setFlat(True)
-            select.clicked.connect(self.choose_font)
-            layout.addWidget(select)
+        return tab
 
-        return layout
+    def _tab_watermark(self) -> QWidget:
+        """Generate the Watermark tab."""
+        tab = QWidget()
+        layout = QVBoxLayout()
+        layout.setAlignment(Qt.AlignTop)
+        tab.setLayout(layout)
+
+        # Opacity
+        groupbox = QGroupBox(TR.get("OPACITY"))
+        layout.addWidget(groupbox)
+        box = QHBoxLayout()
+        box.setAlignment(Qt.AlignHCenter)
+        box.setSizeConstraint(QLayout.SetMinAndMaxSize)
+        groupbox.setLayout(box)
+        slider = QSlider()
+        box.addWidget(slider)
+        label = QLabel()
+        box.addWidget(label)
+        slider.setMinimum(0)
+        slider.setMaximum(100)
+        slider.setOrientation(Qt.Horizontal)
+        slider.valueChanged.connect(lambda v: setattr(self.conf, "opacity", v / 100))
+        slider.valueChanged.connect(lambda v: label.setText(f"{v}%"))
+        slider.setValue(CONF.opacity * 100)
+
+        # Font
+        groupbox = QGroupBox(TR.get("FONT"))
+        layout.addWidget(groupbox)
+        box = QHBoxLayout()
+        box.setAlignment(Qt.AlignHCenter)
+        box.setSizeConstraint(QLayout.SetMinAndMaxSize)
+        groupbox.setLayout(box)
+        font = QLineEdit(CONF.font)
+        box.addWidget(font)
+        font.setPlaceholderText(TR.get("FONT_PLACEHOLDER"))
+        font.setReadOnly(True)
+        font.textChanged.connect(lambda t: setattr(self.conf, "font", t))
+        set_style(font)
+        icon = QIcon(str(RES_DIR / "open.svg"))
+        select = QPushButton(icon, TR.get("CHOOSE"), self)
+        select.setFlat(True)
+        select.clicked.connect(self.choose_font)
+        box.addWidget(select)
+
+        # Optimization
+        groupbox = QGroupBox(TR.get("OPTIMIZE_PICTURES"))
+        layout.addWidget(groupbox)
+        groupbox.setCheckable(True)
+        groupbox.toggled.connect(lambda value: setattr(self.conf, "optimize", value))
+        groupbox.setChecked(CONF.optimize)
+        box = QVBoxLayout()
+        box.setSizeConstraint(QLayout.SetMinAndMaxSize)
+        groupbox.setLayout(box)
+        label = QLabel(TR.get("OPTIMIZE_INFO"))
+        box.addWidget(label)
+        label.setTextFormat(Qt.RichText)
+        label.setOpenExternalLinks(True)
+        tinify_key = QLineEdit(CONF.tinify_key)
+        box.addWidget(tinify_key)
+        tinify_key.setClearButtonEnabled(True)
+        tinify_key.setPlaceholderText(TR.get("OPTIMIZE_PLACEHOLDER"))
+        tinify_key.textChanged.connect(lambda t: setattr(self.conf, "tinify_key", t))
+        set_style(tinify_key)
+
+        return tab
 
     def apply_changes(self) -> None:
         """Save configuration changes."""

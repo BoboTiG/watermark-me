@@ -3,9 +3,16 @@
     "CHOOSE": "Choisir",
     "CODENAME": "Nom de code : %1",
     "FILES": "Zone de glisser-déposer pour fichiers et dossiers à traiter ⤵",
+    "FONT": "Police d'écriture pour le filigrane texte",
+    "GENERAL": "Général",
     "ICON": "Icône",
     "ICON_PLACEHOLDER": "Image optionnelle à appliquer en filigrane",
+    "LANG": "Langue",
     "LANGUAGE": "Français",
+    "OPACITY": "Opacité",
+    "OPTIMIZE_PICTURES": "Optimiser les images",
+    "OPTIMIZE_INFO": "Une <a href='https://tinyjpg.com/developers'>clef TinyJPG</a> est requise ⤵",
+    "OPTIMIZE_PLACEHOLDER": "Clef TinyJPG",
     "STATISTICS": "%1 fichiers traité(s), %2 gagnés",
     "STATISTICS_TINIFY": ", [Crédtits Tinify : %1]",
     "TB_ABOUT": "À Propos",
@@ -17,5 +24,8 @@
     "TITLE_SETTINGS": "Paramètres - %1",
     "TITLE_SEL_FONT": "Sélectionner une police de caractères - %1",
     "TITLE_SEL_PICTURE": "Sélectionner une image - %1",
-    "UPDATE_ERROR": "Erreur de MàJ automatique"
+    "UPDATE": "Mise à jour automatique",
+    "UPDATE_ERROR": "Erreur de MàJ automatique",
+    "UPDATE_INFO": "Si activée, la vérification sera faite au prochain démarrage de l'application.",
+    "WATERMARK": "Filigrane"
 }
