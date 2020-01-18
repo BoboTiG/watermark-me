@@ -195,6 +195,7 @@ class MainWindow(QMainWindow):
         self.text = QLineEdit(CONF.text)
         self.text.setPlaceholderText(TR.get("TEXT_PLACEHOLDER"))
         self.text.setClearButtonEnabled(True)
+        self.text.textChanged.connect(self.button_ok_state)
         set_style(self.text)
         vbox.addWidget(self.text)
 
@@ -210,6 +211,7 @@ class MainWindow(QMainWindow):
         self.picture = QLineEdit(CONF.picture)
         self.picture.setPlaceholderText(TR.get("ICON_PLACEHOLDER"))
         self.picture.setClearButtonEnabled(True)
+        self.picture.textChanged.connect(self.button_ok_state)
         set_style(self.picture)
         vbox.addWidget(self.picture)
 
