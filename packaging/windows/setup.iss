@@ -37,13 +37,14 @@ OutputBaseFilename=watermark-{#MyAppRealVersion}
 
 ; Startup menu entry: "Publisher/Application Name"
 DefaultGroupName={#MyAppPublisher}
+DisableProgramGroupPage=yes
 
 ; Do not require admin rights, no UAC
 PrivilegesRequired=lowest
 
 ; Set the output directory to user's AppData\Local by default.
 DisableDirPage=yes
-DefaultDirName={param:targetdir|{localappdata}\{#MyAppName}}
+DefaultDirName={localappdata}\{#MyAppName}
 
 ; Icons
 UninstallDisplayIcon={app}\{#MyAppExeName}
