@@ -3,9 +3,16 @@
     "CHOOSE": "Choose",
     "CODENAME": "Codename: %1",
     "FILES": "Drag'n drop area for files and folders to watermark ⤵",
+    "FONT": "Text watermark font",
+    "GENERAL": "General",
     "ICON": "Icon",
     "ICON_PLACEHOLDER": "Optional watermark picture",
+    "LANG": "Language",
     "LANGUAGE": "English",
+    "OPACITY": "Opacity",
+    "OPTIMIZE_INFO": "A <a href='https://tinyjpg.com/developers'>TinyJPG key</a> is required ⤵",
+    "OPTIMIZE_PICTURES": "Optimize pictures",
+    "OPTIMIZE_PLACEHOLDER": "TinyJPG key",
     "STATISTICS": "%1 file(s), %2 won",
     "STATISTICS_TINIFY": ", [Tinify credits: %1]",
     "TB_ABOUT": "About",
@@ -17,5 +24,8 @@
     "TITLE_SETTINGS": "Settings - %1",
     "TITLE_SEL_FONT": "Select a font - %1",
     "TITLE_SEL_PICTURE": "Select a picture - %1",
-    "UPDATE_ERROR": "Auto-update error"
+    "UPDATE": "Automatic update",
+    "UPDATE_ERROR": "Auto-update error",
+    "UPDATE_INFO": "When enabled, the check will be done at next startup.",
+    "WATERMARK": "Watermark"
 }
