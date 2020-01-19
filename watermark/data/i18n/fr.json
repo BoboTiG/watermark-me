@@ -9,6 +9,7 @@
     "ICON_PLACEHOLDER": "Image optionnelle à appliquer en filigrane",
     "LANG": "Langue",
     "LANGUAGE": "Français",
+    "NO_UPDATE": "Vous utilisez la version la plus récente !",
     "OPACITY": "Opacité",
     "OPTIMIZE_PICTURES": "Optimiser les images",
     "OPTIMIZE_INFO": "Une <a href='https://tinyjpg.com/developers'>clef TinyJPG</a> est requise ⤵",
@@ -25,7 +26,13 @@
     "TITLE_SEL_FONT": "Sélectionner une police de caractères - %1",
     "TITLE_SEL_PICTURE": "Sélectionner une image - %1",
     "UPDATE": "Mise à jour automatique",
-    "UPDATE_ERROR": "Erreur de MàJ automatique",
+    "UPDATE_DOWNLOADED": "Mise à jour : téléchargé %1 sur %2",
+    "UPDATE_ERROR": "Erreur de MàJ automatique : %1",
+    "UPDATE_FETCH": "Téléchargement de la version %1 dans %2",
+    "UPDATE_FOUND": "Nouvelle version disponible : %1",
     "UPDATE_INFO": "Si activée, la vérification sera faite au prochain démarrage de l'application.",
+    "UPDATE_INSTALL": "Installation de la version %1",
+    "UPDATE_RESTART": "Démarrage de la mise à jour automatique d'ici 5 secondes...",
+    "UPDATE_START": "Processus de mise à jour vers la version %1",
     "WATERMARK": "Filigrane"
 }

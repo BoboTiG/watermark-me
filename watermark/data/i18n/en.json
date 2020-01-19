@@ -9,6 +9,7 @@
     "ICON_PLACEHOLDER": "Optional watermark picture",
     "LANG": "Language",
     "LANGUAGE": "English",
+    "NO_UPDATE": "You are up-to-date!",
     "OPACITY": "Opacity",
     "OPTIMIZE_INFO": "A <a href='https://tinyjpg.com/developers'>TinyJPG key</a> is required ⤵",
     "OPTIMIZE_PICTURES": "Optimize pictures",
@@ -25,7 +26,13 @@
     "TITLE_SEL_FONT": "Select a font - %1",
     "TITLE_SEL_PICTURE": "Select a picture - %1",
     "UPDATE": "Automatic update",
-    "UPDATE_ERROR": "Auto-update error",
+    "UPDATE_DOWNLOADED": "Update: downloaded %1 out of %2",
+    "UPDATE_ERROR": "Auto-update error: %1",
+    "UPDATE_FETCH": "Fetching version %1 into %2",
+    "UPDATE_FOUND": "Found a new version: %1",
     "UPDATE_INFO": "When enabled, the check will be done at next startup.",
+    "UPDATE_INSTALL": "Installing version %1",
+    "UPDATE_RESTART": "Launching the auto-updater in 5 seconds ...",
+    "UPDATE_START": "Starting application update process to version %1",
     "WATERMARK": "Watermark"
 }

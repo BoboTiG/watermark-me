@@ -7,24 +7,28 @@ You can always get the latest version of this module at:
     https://github.com/BoboTiG/watermark-me
 If that URL should fail, try contacting the author.
 """
-import logging
 import os
 import uuid
 from abc import abstractmethod
 from tempfile import gettempdir
-from typing import Any, Dict, List
+from typing import Any, Callable, Dict, List
 
 import requests
 
 from .utils import get_update_status
 from ..constants import UPDATE_URL
+from ..translator import TR
+from ..utils import sizeof_fmt
 
 
 class BaseUpdater:
     """ Updater class for frozen application. """
 
-    def __init__(self, url: str = "") -> None:
+    def __init__(self, callback: Callable[[str], None], url: str = "") -> None:
+        # The function that will be passed a string argument to ease following the update process
+        self.callback = callback
         self.url = url or UPDATE_URL
+
         self.versions: List[Dict[str, Any]] = []
         self.chunk_size = 8192
 
@@ -41,7 +45,7 @@ class BaseUpdater:
         """
 
     def update(self, version: str) -> None:
-        logging.info(f"Starting application update process to version {version}")
+        self.callback(TR.get("UPDATE_START", [version]))
         self._install(version, self._download(version))
 
     #
@@ -53,19 +57,23 @@ class BaseUpdater:
 
         url = ""
         name = ""
+        total_size = ""
         for version_info in self.versions:
             if version_info["name"] == version:
                 asset = version_info["assets"][0]
                 url = asset["browser_download_url"]
                 name = asset["name"]
+                total_size = sizeof_fmt(asset["size"], suffix=TR.get("BYTE"))
                 break
 
         path = os.path.join(gettempdir(), uuid.uuid4().hex + "_" + name)
 
-        logging.info(f"Fetching version {version!r} into {path!r}")
+        self.callback(TR.get("UPDATE_FETCH", [version, path]))
         with requests.get(url, stream=True) as req, open(path, "wb") as tmp:
-            for chunk in req.iter_content(self.chunk_size):
+            for n, chunk in enumerate(req.iter_content(self.chunk_size), 1):
                 tmp.write(chunk)
+                size = sizeof_fmt(n * self.chunk_size, suffix=TR.get("BYTE"))
+                self.callback(TR.get("UPDATE_DOWNLOADED", [size, total_size]))
 
             # Force write of file to disk
             tmp.flush()
@@ -84,13 +92,18 @@ class BaseUpdater:
         OS-specific method to install the new version.
         It must take care of uninstalling the current one.
         """
-        logging.info(f"Installing version {version}")
+        self.callback(TR.get("UPDATE_INSTALL", [version]))
         self.install(filename)
 
     def check(self, version: str) -> None:
         """ Retrieve available versions and install an eventual found candidate. """
-        self._fetch_versions()
-        new_version = get_update_status(version, self.versions)
-        if new_version:
-            logging.debug(f"Found a new version: {new_version!r}")
-            self.update(new_version)
+        try:
+            self._fetch_versions()
+            new_version = get_update_status(version, self.versions)
+            if new_version:
+                self.callback(TR.get("UPDATE_FOUND", [new_version]))
+                self.update(new_version)
+            else:
+                self.callback(TR.get("NO_UPDATE"))
+        except Exception as exc:
+            self.callback(TR.get("UPDATE_ERROR", [str(exc)]))
