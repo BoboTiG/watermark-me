@@ -1,6 +1,14 @@
 # Changelog
 
+## 0.1b3
+
+Release date: `2020-01-19`
+
+-
+
 ## 0.1b2
+
+Release date: `2020-01-19`
 
 - [Windows] Set executables copyright years (closes #24)
 - [Windows] Add a wizard image for the final installer screen (closes #25)
