@@ -39,7 +39,11 @@ if hasattr(sys, "frozen"):
     # PyInstaller
     DATA_DIR = Path(getattr(sys, "_MEIPASS")) / "data"
     RES_DIR = Path(getattr(sys, "_MEIPASS")) / "res"
+    FREEZER = "pyinstaller"
 else:
     # None and Nuitka
     DATA_DIR = Path(__file__).parent / "data"
     RES_DIR = Path(__file__).parent / "res"
+    FREEZER = ""
+    if "__compiled__" in globals():
+        FREEZER = "nuikta"

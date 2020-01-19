@@ -25,6 +25,7 @@ def test_get_update_status_beta():
     ]
     assert get_update_status("0.1b1", versions) == "0.1b2"
     assert get_update_status("0.1b2", versions) == ""
+    assert get_update_status("0.1b3", versions) == ""
 
 
 def test_get_update_status_beta_to_release():
@@ -56,15 +57,41 @@ def test_base_updater():
             nonlocal checkpoint
             checkpoint = True
 
-    updater = Updater()
+    def callback(msg: str) -> None:
+        assert isinstance(msg, str)
+
+    updater = Updater(callback)
     updater.check(__version__)
 
     # Append versions
-    assets = [{"name": "example.exe", "browser_download_url": "https://example.org"}]
+    assets = [
+        {
+            "name": "example.exe",
+            "browser_download_url": "https://example.org",
+            "size": 1024,
+        }
+    ]
     versions = [
         {"name": "0.1b1", "prerelease": True, "assets": []},
         {"name": "0.1b2", "prerelease": True, "assets": assets},
     ]
     updater.versions = versions
     updater.check("0.1b1")
+    assert checkpoint
+
+
+def test_base_updater_error():
+    class Updater(BaseUpdater):
+        def _fetch_versions(self) -> None:
+            raise ValueError("Mock'ed error")
+
+    checkpoint = False
+
+    def callback(msg: str) -> None:
+        assert isinstance(msg, str)
+        nonlocal checkpoint
+        checkpoint = True
+
+    updater = Updater(callback)
+    updater.check(__version__)
     assert checkpoint

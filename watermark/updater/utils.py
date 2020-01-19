@@ -29,6 +29,6 @@ def get_update_status(current_version: str, versions: Versions) -> str:
         return ""
 
     latest = get_latest_version(versions)
-    if not latest or current_version == latest:
+    if not latest or StrictVersion(latest) <= StrictVersion(current_version):
         return ""
     return latest

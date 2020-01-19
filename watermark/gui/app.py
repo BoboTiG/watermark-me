@@ -8,6 +8,7 @@ You can always get the latest version of this module at:
 If that URL should fail, try contacting the author.
 """
 from pathlib import Path
+from threading import Thread
 
 from PyQt5.QtCore import QEvent, QTimer, Qt, QCoreApplication
 from PyQt5.QtGui import QIcon, QPixmap
@@ -35,7 +36,7 @@ from .utils import set_style
 from ..translator import TR
 from .. import __version__
 from ..conf import CONF
-from ..constants import COMPANY, RES_DIR, TITLE, WINDOWS
+from ..constants import COMPANY, FREEZER, RES_DIR, TITLE, WINDOWS
 from ..optimizer import optimize, validate_key
 from ..watermark import apply_watermarks
 from ..utils import sizeof_fmt
@@ -84,9 +85,6 @@ class MainWindow(QMainWindow):
         self._old_key = None
         self._old_state = None
 
-        if CONF.update:
-            self._check_for_update()
-
         # Init the GUI
         self._settings = Settings()
         self._toolbar()
@@ -96,6 +94,8 @@ class MainWindow(QMainWindow):
         self._status_msg()
         self._window()
         self.button_ok_state()
+
+        self._check_for_update()
 
     @property
     def use_optimization(self) -> bool:
@@ -120,16 +120,13 @@ class MainWindow(QMainWindow):
 
     def _check_for_update(self) -> None:
         """Check for a new update."""
-        if not WINDOWS:
+        if not (CONF.update and FREEZER and WINDOWS):
             return
 
         from ..updater.windows import Updater
 
-        updater = Updater()
-        try:
-            updater.check(__version__)
-        except Exception:
-            self._status_msg(TR.get("UPDATE_ERROR"))
+        updater = Updater(self._status_msg)
+        Thread(target=updater.check, args=(__version__,)).start()
 
     def _select_one_file(self) -> None:
         """Choose an image to use as a watermark picture."""
@@ -157,6 +154,7 @@ class MainWindow(QMainWindow):
                 msg += TR.get("STATISTICS_TINIFY", [tinify.compression_count])
 
         self.status_bar.showMessage(msg)
+        QCoreApplication.processEvents()  # Important, keep it!
 
     def _toolbar(self) -> QToolBar:
         """Create the toolbar."""
