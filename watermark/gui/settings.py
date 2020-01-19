@@ -129,7 +129,7 @@ class Settings(QDialog):
         slider.setOrientation(Qt.Horizontal)
         slider.valueChanged.connect(lambda v: setattr(self.conf, "opacity", v / 100))
         slider.valueChanged.connect(lambda v: opacity_lbl.setText(f"{v}%"))
-        slider.setValue(CONF.opacity * 100)
+        slider.setValue(int(CONF.opacity * 100))
 
         # Font
         groupbox = QGroupBox(TR.get("FONT"))
