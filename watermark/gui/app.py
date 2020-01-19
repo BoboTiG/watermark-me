@@ -9,7 +9,7 @@ If that URL should fail, try contacting the author.
 """
 from pathlib import Path
 
-from PyQt5.QtCore import QEvent, QT_VERSION_STR, QTimer, Qt, QCoreApplication
+from PyQt5.QtCore import QEvent, QTimer, Qt, QCoreApplication
 from PyQt5.QtGui import QIcon, QPixmap
 from PyQt5.QtWidgets import (
     QAction,
@@ -351,17 +351,14 @@ def show_about() -> None:
     msg.setInformativeText(f"{codename}\n© 2019-2020 {COMPANY}")
 
     from platform import python_implementation, python_version
-    from PIL import __version__ as pillow_version
-    from PyInstaller import __version__ as pyinstaller_version
-    from yaml import __version__ as pyaml_version
 
     msg.setDetailedText(
         f"{python_implementation()} {python_version()}\n"
-        f"Pillow {pillow_version}\n"
-        f"PyInstaller {pyinstaller_version}\n"
-        f"PyQt5 {QT_VERSION_STR}\n"
-        f"PyYAML {pyaml_version}\n"
-        f"Tinify {tinify.__version__}"
+        f"Pillow 7.0.0\n"
+        f"PyInstaller 3.6\n"
+        f"PyQt5 5.13.2\n"
+        f"PyYAML 5.3\n"
+        f"Tinify 1.5.1"
     )
 
     msg.setStandardButtons(QMessageBox.Close)
