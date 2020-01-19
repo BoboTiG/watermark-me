@@ -7,12 +7,13 @@ You can always get the latest version of this module at:
     https://github.com/BoboTiG/watermark-me
 If that URL should fail, try contacting the author.
 """
-import logging
-import subprocess
+from subprocess import Popen
+from time import sleep
 
 from PyQt5.QtWidgets import qApp
 
 from .base import BaseUpdater
+from ..translator import TR
 
 
 class Updater(BaseUpdater):
@@ -27,11 +28,13 @@ class Updater(BaseUpdater):
 
         So, a big thank you to Inno Setup!
         """
+        self.callback(TR.get("UPDATE_RESTART"))
+        # sleep to let the time to read the message
+        sleep(3)
 
         # Using ping instead of timeout to wait 5 seconds
         cmd = f'ping 127.0.0.1 -n 6 > nul && "{filename}" /silent'
-        logging.info("Launching the auto-updater in 5 seconds ...")
-        subprocess.Popen(cmd, shell=True, close_fds=True)
+        Popen(cmd, shell=True, close_fds=True)
 
         # Exit the the app
         qApp.quit()
