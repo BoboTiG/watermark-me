@@ -122,13 +122,13 @@ class Settings(QDialog):
         groupbox.setLayout(box)
         slider = QSlider()
         box.addWidget(slider)
-        label = QLabel()
-        box.addWidget(label)
+        opacity_lbl = QLabel()
+        box.addWidget(opacity_lbl)
         slider.setMinimum(0)
         slider.setMaximum(100)
         slider.setOrientation(Qt.Horizontal)
         slider.valueChanged.connect(lambda v: setattr(self.conf, "opacity", v / 100))
-        slider.valueChanged.connect(lambda v: label.setText(f"{v}%"))
+        slider.valueChanged.connect(lambda v: opacity_lbl.setText(f"{v}%"))
         slider.setValue(CONF.opacity * 100)
 
         # Font
