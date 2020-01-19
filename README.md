@@ -53,3 +53,5 @@ Double-click on `build-win.bat` (think to update environment variables first).
 Icon made by srip from [www.flaticon.com](https://www.flaticon.com/free-icon/optimize_2344561).
 
 Tests data (logo and font) are used with the blessing of the creator of [Arresto Momentum](https://www.arresto-momentum.com/).
+
+Windows installer final wizard picture taken from https://www.reddit.com/r/wallpapers/comments/cpkvnl/retro_style_wallpaper_2560x1440/.

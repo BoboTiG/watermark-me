@@ -49,13 +49,13 @@ DefaultDirName={localappdata}\{#MyAppName}
 ; Icons
 UninstallDisplayIcon={app}\{#MyAppExeName}
 ; 256x256px, generated from a PNG with https://convertico.com/
-SetupIconFile=app_icon.ico
+SetupIconFile=pictures\app_icon.ico
 
 ; Pictures
-; 164x314px
-WizardImageFile=wizard.bmp
+; https://www.jrsoftware.org/ishelp/topic_setup_wizardimagefile.htm
+WizardImageFile=pictures\wizard.bmp
 ; 55x58px
-WizardSmallImageFile=wizard-small.bmp
+WizardSmallImageFile=pictures\wizard-small.bmp
 
 ; Use a modern look
 WizardStyle=modern
