@@ -4,7 +4,7 @@
 
 Release date: `2020-01-19`
 
--
+- Updater: fix the implementation ...
 
 ## 0.1b2
 

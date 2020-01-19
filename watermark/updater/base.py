@@ -77,7 +77,7 @@ class BaseUpdater:
         """ Fetch available versions. It sets `self.versions` on success. """
         with requests.get(self.url) as resp:
             resp.raise_for_status()
-            self.version = resp.json()
+            self.versions = resp.json()
 
     def _install(self, version: str, filename: str) -> None:
         """
