@@ -4,7 +4,7 @@
 
 Release date: `2020-xx-xx`
 
--
+- Allow only one instance (closes #47)
 
 ## 0.1b3
 
