@@ -100,6 +100,7 @@ def add_text_watermark(img: Image, watermark: str) -> Image:
         # ((watermark_img.size[0] - n_width) / 2, 10),
         watermark,
         font=n_font,
+        fill=CONF.text_color,
     )
 
     alpha = watermark_img.split()[3]

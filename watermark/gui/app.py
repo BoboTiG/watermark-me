@@ -11,9 +11,10 @@ from pathlib import Path
 from threading import Thread
 
 from PyQt5.QtCore import QEvent, QTimer, Qt, QCoreApplication
-from PyQt5.QtGui import QIcon, QPixmap
+from PyQt5.QtGui import QColor, QIcon, QPixmap
 from PyQt5.QtWidgets import (
     QAction,
+    QColorDialog,
     QDialogButtonBox,
     QFileDialog,
     QGroupBox,
@@ -92,6 +93,7 @@ class MainWindow(QMainWindow):
         self._status_bar()
         self.setStatusBar(self.status_bar)
         self._status_msg()
+        self._color_picker()
         self._window()
         self.button_ok_state()
 
@@ -127,6 +129,13 @@ class MainWindow(QMainWindow):
 
         updater = Updater(self._status_msg)
         Thread(target=updater.check, args=(__version__,)).start()
+
+    def _color_picker(self) -> None:
+        """Setup the color picker."""
+        self._color_picker_dlg = QColorDialog(parent=self)
+        self._color_picker_dlg.colorSelected.connect(self._handle_text_color)
+        self._current_text_color = QColor()
+        self._current_text_color.setNamedColor(CONF.text_color)
 
     def _select_one_file(self) -> None:
         """Choose an image to use as a watermark picture."""
@@ -186,7 +195,7 @@ class MainWindow(QMainWindow):
     def _add_group_text(self) -> QGroupBox:
         """Group box for the text watermark."""
         groupbox = QGroupBox(TR.get("TEXT"))
-        vbox = QVBoxLayout()
+        vbox = QHBoxLayout()
         groupbox.setLayout(vbox)
 
         # The text watermark input
@@ -196,6 +205,17 @@ class MainWindow(QMainWindow):
         self.text.textChanged.connect(self.button_ok_state)
         set_style(self.text)
         vbox.addWidget(self.text)
+
+        # The color picker button
+        self.btn_pick_color = QPushButton(
+            QIcon(str(RES_DIR / "color.svg")), TR.get("COLOR")
+        )
+        self.btn_pick_color.setAutoFillBackground(True)
+        self.btn_pick_color.clicked.connect(self._color_picker_dlg.show)
+        vbox.addWidget(self.btn_pick_color)
+
+        # Update the button colors now that the color picker and the button are initialized
+        self._handle_text_color(self._current_text_color)
 
         return groupbox
 
@@ -233,6 +253,26 @@ class MainWindow(QMainWindow):
         vbox.addWidget(self.paths_list)
 
         return groupbox
+
+    def _handle_text_color(self, color: QColor) -> None:
+        """Handle the selected color for the text."""
+        # Guess the "darkness" of the selected color to adapt the button text one accordingly
+        # Source: https://stackoverflow.com/a/24261119/1117028
+        darkness = (
+            1
+            - (0.299 * color.red() + 0.587 * color.green() + 0.114 * color.blue()) / 255
+        )
+        txt_color = "black" if darkness < 0.5 else "white"
+
+        # Save the new color
+        self._current_text_color = color
+        CONF.text_color = color.name()
+        self._color_picker_dlg.setCurrentColor(color)
+
+        # And update the button colors (+ padding to be coherent with the associated QLineEdit)
+        self.btn_pick_color.setStyleSheet(
+            f"padding: 5px 10px; background-color: {color.name()}; color: {txt_color};"
+        )
 
     def _window(self) -> None:
         """Construct the main window."""

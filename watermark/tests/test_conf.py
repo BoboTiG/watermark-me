@@ -34,5 +34,11 @@ def test_read_bad_font_path(location):
     assert isfile(config.font)
 
 
+def test_read_bad_text_color(location):
+    config = read_config(location / "conf_bad_text_color")
+    assert isinstance(config, SimpleNamespace)
+    assert config.text_color == "#ffffff"
+
+
 def test_save(tmp_path):
     save_config(tmp_path / "conf_saved")
