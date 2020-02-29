@@ -7,6 +7,7 @@ You can always get the latest version of this module at:
     https://github.com/BoboTiG/watermark-me
 If that URL should fail, try contacting the author.
 """
+import re
 from os.path import expandvars, isfile
 from pathlib import Path
 from types import SimpleNamespace
@@ -35,6 +36,7 @@ def default_config() -> Options:
         "optimize": False,
         "picture": "",
         "text": "",
+        "text_color": "#ffffff",
         "tinify_key": "",
         "update": True,
     }
@@ -62,6 +64,10 @@ def read_config(folder: str = CONF_DIR) -> SimpleNamespace:
     # Ensure the picture exists
     if not isfile(config["picture"]):
         config["picture"] = ""
+
+    # Ensure the text color has the good format
+    if not re.fullmatch(r"#[0-9a-fA-F]{6}", config["text_color"]):
+        config["text_color"] = "#ffffff"
 
     return SimpleNamespace(**config)
 
