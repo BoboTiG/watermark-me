@@ -10,12 +10,19 @@ If that URL should fail, try contacting the author.
 import sys
 
 from PyQt5.QtWidgets import QApplication
+from tendo.singleton import SingleInstance, SingleInstanceException
 from watermark.conf import save_config
 from watermark.gui.app import MainWindow
 
 
 def main() -> int:
     """Entry point."""
+    # Allow only one instance
+    try:
+        me = SingleInstance()  # noqa
+    except SingleInstanceException:
+        return 1
+
     try:
         app = QApplication([])
         window = MainWindow()
