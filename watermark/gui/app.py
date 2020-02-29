@@ -356,6 +356,7 @@ def show_about() -> None:
         f"PyInstaller 3.6\n"
         f"PyQt5 5.13.2\n"
         f"PyYAML 5.3\n"
+        f"Tendo 0.2.15\n"
         f"Tinify 1.5.1"
     )
 
