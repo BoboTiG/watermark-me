@@ -29,7 +29,7 @@ from PyQt5.QtWidgets import (
     QWidget,
 )
 
-from .utils import set_style
+from .utils import set_cursor, set_style
 from ..conf import CONF, save_config
 from ..constants import RES_DIR, TITLE
 from ..translator import TR
@@ -57,6 +57,8 @@ class Settings(QDialog):
         # Buttons
         buttons = QDialogButtonBox()
         buttons.setStandardButtons(QDialogButtonBox.Apply | QDialogButtonBox.Cancel)
+        set_cursor(buttons.button(QDialogButtonBox.Apply))
+        set_cursor(buttons.button(QDialogButtonBox.Cancel))
         buttons.button(QDialogButtonBox.Apply).clicked.connect(self.apply_changes)
         buttons.clicked.connect(self.close)
         layout.addWidget(buttons)
@@ -85,6 +87,7 @@ class Settings(QDialog):
         groupbox.setLayout(box)
         for key, name in sorted(TR.langs.values()):
             radio = QRadioButton(name)
+            set_cursor(radio)
             box.addWidget(radio)
             radio.toggled.connect(partial(self._on_lang_toggled, key))
             if CONF.lang == key:
@@ -130,6 +133,7 @@ class Settings(QDialog):
         slider.valueChanged.connect(lambda v: setattr(self.conf, "opacity", v / 100))
         slider.valueChanged.connect(lambda v: opacity_lbl.setText(f"{v}%"))
         slider.setValue(int(CONF.opacity * 100))
+        set_cursor(slider)
 
         # Font
         groupbox = QGroupBox(TR.get("FONT"))
@@ -146,6 +150,7 @@ class Settings(QDialog):
         set_style(font)
         icon = QIcon(str(RES_DIR / "open.svg"))
         select = QPushButton(icon, TR.get("CHOOSE"), self)
+        set_cursor(select)
         select.setFlat(True)
         select.clicked.connect(self.choose_font)
         box.addWidget(select)
