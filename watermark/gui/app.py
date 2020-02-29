@@ -33,7 +33,7 @@ from PyQt5.QtWidgets import (
 import tinify
 
 from .settings import Settings
-from .utils import set_style
+from .utils import set_cursor, set_style
 from ..translator import TR
 from .. import __version__
 from ..conf import CONF
@@ -210,6 +210,7 @@ class MainWindow(QMainWindow):
         self.btn_pick_color = QPushButton(
             QIcon(str(RES_DIR / "color.svg")), TR.get("COLOR")
         )
+        set_cursor(self.btn_pick_color)
         self.btn_pick_color.setAutoFillBackground(True)
         self.btn_pick_color.clicked.connect(self._color_picker_dlg.show)
         vbox.addWidget(self.btn_pick_color)
@@ -237,6 +238,7 @@ class MainWindow(QMainWindow):
         btn_choose_file = QPushButton(
             QIcon(str(RES_DIR / "open.svg")), TR.get("CHOOSE")
         )
+        set_cursor(btn_choose_file)
         btn_choose_file.setFlat(True)
         btn_choose_file.clicked.connect(self._select_one_file)
         vbox.addWidget(btn_choose_file)
@@ -291,6 +293,7 @@ class MainWindow(QMainWindow):
         self.buttons = QDialogButtonBox()
         self.buttons.setStandardButtons(QDialogButtonBox.Ok)
         self.buttons.clicked.connect(self._process_all)
+        set_cursor(self.buttons.button(QDialogButtonBox.Ok))
         layout.addWidget(self.buttons)
 
         self.resize(640, 480)
@@ -401,4 +404,5 @@ def show_about() -> None:
     )
 
     msg.setStandardButtons(QMessageBox.Close)
+    set_cursor(msg.button(QMessageBox.Close))
     msg.exec_()
