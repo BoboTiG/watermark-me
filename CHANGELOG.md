@@ -5,7 +5,7 @@
 Release date: `2020-xx-xx`
 
 - Allow only one instance (closes #47)
-- GUI: allow to customize the text color
+- GUI: allow to customize the text color (closes #51)
 
 ## 0.1b3
 
