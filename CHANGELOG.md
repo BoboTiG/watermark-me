@@ -2,7 +2,7 @@
 
 ## 0.1b4
 
-Release date: `2020-xx-xx`
+Release date: `2020-04-06`
 
 - Allow only one instance (closes #47)
 - GUI: allow to customize the text color (closes #51)
