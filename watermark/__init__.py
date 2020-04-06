@@ -15,7 +15,7 @@ To declare a beta, use this schema:
     - X.Y.ZbN i.e. "2.4.5b1"
 """
 
-__version__ = "0.1b4"
+__version__ = "0.1b5"
 __author__ = "Mickaël 'Tiger-222' Schoentgen"
 __copyright__ = """
 Copyright (c) 2019-2020, Mickaël 'Tiger-222' Schoentgen
