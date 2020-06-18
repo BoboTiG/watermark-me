@@ -106,7 +106,7 @@ function check_upgrade {
 function check_vars {
 	# Check required variables
 	if (-Not ($Env:PYTHON_VERSION)) {
-		$Env:PYTHON_VERSION = '3.8.1'  # XXX_PYTHON
+		$Env:PYTHON_VERSION = '3.8.3'  # XXX_PYTHON
 	} elseif (-Not ($Env:WORKSPACE)) {
 		Write-Output ">>> WORKSPACE not defined. Aborting."
 		ExitWithCode 1
