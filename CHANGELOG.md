@@ -4,6 +4,7 @@
 
 Release date: `2020-xx-xx`
 
+- Packaging: include Tendo metadata to fix PyInstaller runtime (fixes #75)
 - Packaging: now using Python to 3.8.3
 - Packaging: now using PyQt to 5.15.0
 
