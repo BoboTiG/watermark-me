@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1b6
+
+Release date: `2020-xx-xx`
+
+-
+
 ## 0.1b5
 
 Release date: `2020-06-18`
