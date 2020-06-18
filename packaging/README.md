@@ -44,7 +44,6 @@ Possible `ARG`:
     -build: freeze the client into self-hosted binary package
     -check_upgrade: check the auto-update works
     -install: install a complete development environment
-    -install_release: install a complete environment for a release (without tests requirements)
     -start: start Nuxeo Drive
     -tests: launch the tests suite
 
@@ -75,22 +74,6 @@ If you get an error message complaining about the lack of signature for this scr
 ### Optional Envars
 
 - `PYTHON_VERSION` is the required **Python version** to use, i.e. `3.8.1`.
-- `SPECIFIC_TEST` is a **specific test** to launch. The syntax must be the same as [pytest markers](http://doc.pytest.org/en/latest/example/markers.html#selecting-tests-based-on-their-node-id), i.e.:
-```
-    test_local_client.py (an entire test file)
-    test_local_client.py::TestLocalClient (a whole class)
-    test_local_client.py::TestLocalClient::test_make_documents (only one method)
-```
-- `SKIP` is used to tweak tests checks:
-```
-    - SKIP=flake8 to skip code style
-    - SKIP=mypy to skip type annotations
-    - SKIP=cleanup to skip dead code checks
-    - SKIP=rerun to not rerun failed test(s)
-    - SKIP=integration to not run integration tests on Windows
-    - SKIP=all to skip all above (equivalent to flake8,mypy,rerun,integration)
-    - SKIP=tests tu run only code checks
-```
 
 #### MacOS Specific
 
