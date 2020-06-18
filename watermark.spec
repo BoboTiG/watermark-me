@@ -7,6 +7,7 @@ import os.path
 import re
 import sys
 
+from PyInstaller.utils.hooks import copy_metadata
 
 def get_version(init_file):
     """ Find the current version. """
@@ -43,6 +44,7 @@ excludes = [
 ]
 
 data = [(os.path.join(sources, "data"), "data"), (os.path.join(sources, "res"), "res")]
+data.extend(copy_metadata("tendo"))  # See issue #75
 version = get_version(os.path.join(sources, "__init__.py"))
 properties_rc = None
 
