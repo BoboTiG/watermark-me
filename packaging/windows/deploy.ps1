@@ -4,30 +4,15 @@
 #     -build: build the installer
 #     -check_upgrade: check the auto-update works
 #     -install: install all dependencies
-#     -install_release: install all but test dependencies
 #     -start: start the application
 #     -tests: launch the tests suite
 #
 # Source: https://github.com/nuxeo/nuxeo-drive/blob/master/tools/windows/deploy_jenkins_slave.ps1
 #
-# ---
-#
-# You can tweak tests checks by setting the SKIP envar:
-#    - SKIP=flake8 to skip code style
-#    - SKIP=mypy to skip type annotations
-#    - SKIP=cleanup to skip dead code checks
-#    - SKIP=rerun to not rerun failed test(s)
-#    - SKIP=integration to not run integration tests on Windows
-#    - SKIP=all to skip all above (equivalent to flake8,mypy,rerun,integration)
-#    - SKIP=tests tu run only code checks
-#
-# There is no strict syntax about multiple skips (coma, coma + space, no separator, ... ).
-#
 param (
 	[switch]$build = $false,
 	[switch]$check_upgrade = $false,
 	[switch]$install = $false,
-	[switch]$install_release = $false,
 	[switch]$start = $false,
 	[switch]$tests = $false
 )
@@ -122,23 +107,10 @@ function check_vars {
 	$Env:STORAGE_DIR = (New-Item -ItemType Directory -Force -Path "$($Env:WORKSPACE)\..\deploy-dir\$Env:PYTHON_VERSION").FullName
 
 	Write-Output "    PYTHON_VERSION = $Env:PYTHON_VERSION"
-	Write-Output "    WORKSPACE            = $Env:WORKSPACE"
-	Write-Output "    STORAGE_DIR          = $Env:STORAGE_DIR"
-	Write-Output "    PYTHON_DIR           = $Env:PYTHON_DIR"
-	Write-Output "    ISCC_PATH            = $Env:ISCC_PATH"
-
-	if (-Not ($Env:SPECIFIC_TEST) -Or ($Env:SPECIFIC_TEST -eq "")) {
-		$Env:SPECIFIC_TEST = "$Env:REPOSITORY_NAME\tests"
-	} else {
-		Write-Output "    SPECIFIC_TEST        = $Env:SPECIFIC_TEST"
-		$Env:SPECIFIC_TEST = "$Env:REPOSITORY_NAME\tests\$Env:SPECIFIC_TEST"
-	}
-
-	if (-Not ($Env:SKIP)) {
-		$Env:SKIP = ""
-	} else {
-		Write-Output "    SKIP                 = $Env:SKIP"
-	}
+	Write-Output "    WORKSPACE      = $Env:WORKSPACE"
+	Write-Output "    STORAGE_DIR    = $Env:STORAGE_DIR"
+	Write-Output "    PYTHON_DIR     = $Env:PYTHON_DIR"
+	Write-Output "    ISCC_PATH      = $Env:ISCC_PATH"
 }
 
 function ExitWithCode($retCode) {
@@ -202,65 +174,16 @@ function install_python {
 	}
 }
 
-function launch_test($path, $pytest_args) {
-	# Launch tests on a specific path. On failure, retry failed tests.
-	& $Env:STORAGE_DIR\Scripts\python.exe $global:PYTHON_OPT -bb -Wall -m pytest $pytest_args "$path"
-	if ($lastExitCode -eq 0) {
-		return
-	}
-
-	if (-not ($Env:SKIP -match 'rerun' -or $Env:SKIP -match 'all')) {
-		# Do not fail on error as all failures will be re-run another time at the end
-		& $Env:STORAGE_DIR\Scripts\python.exe $global:PYTHON_OPT -bb -Wall -m pytest `
-			--last-failed --last-failed-no-failures none
-	}
-}
-
 function launch_tests {
-	# If a specific test is asked, just run it and bypass all over checks
-	if ($Env:SPECIFIC_TEST -ne "tests") {
-		Write-Output ">>> Launching the tests suite"
-		launch_test "$Env:SPECIFIC_TEST"
-		return
+	# Launch tests
+	& $Env:STORAGE_DIR\Scripts\python.exe $global:PYTHON_OPT -OO $global:PIP_OPT tox
+	if ($lastExitCode -ne 0) {
+		ExitWithCode $lastExitCode
 	}
-
-	if (-not ($Env:SKIP -match 'flake8' -or $Env:SKIP -match 'all')) {
-		Write-Output ">>> Checking the style"
-		& $Env:STORAGE_DIR\Scripts\python.exe $global:PYTHON_OPT -m flake8 .
-		if ($lastExitCode -ne 0) {
-			ExitWithCode $lastExitCode
-		}
+	& $Env:STORAGE_DIR\Scripts\python.exe $global:PYTHON_OPT -m tox
+	if ($lastExitCode -ne 0) {
+		ExitWithCode $lastExitCode
 	}
-
-	if (-not ($Env:SKIP -match 'mypy' -or $Env:SKIP -match 'all')) {
-		Write-Output ">>> Checking type annotations"
-		& $Env:STORAGE_DIR\Scripts\python.exe $global:PYTHON_OPT -m mypy $Env:REPOSITORY_NAME
-		if ($lastExitCode -ne 0) {
-			ExitWithCode $lastExitCode
-		}
-	}
-
-	if (-not ($Env:SKIP -match 'cleanup' -or $Env:SKIP -match 'all')) {
-		Write-Output ">>> Checking for dead code"
-		& $Env:STORAGE_DIR\Scripts\python.exe $global:PYTHON_OPT -m vulture $Env:REPOSITORY_NAME tools\whitelist.py
-		if ($lastExitCode -ne 0) {
-			ExitWithCode $lastExitCode
-		}
-	}
-
-	if (-not ($Env:SKIP -match 'tests')) {
-		Write-Output ">>> Launching tests"
-		launch_test "watermark\tests"
-	}
-
-	# if (-not ($Env:SKIP -match 'integration' -or $Env:SKIP -match 'all')) {
-	#	Write-Output ">>> Freezing the application for integration tests"
-	#	$Env:FREEZE_ONLY = 1
-	#	build_installer
-	#
-	#	Write-Output ">>> Launching integration tests"
-	#	launch_test "$Env:REPOSITORY_NAME\tests\integration\windows" "-n0"
-	# }
 }
 
 function start_app {
@@ -278,7 +201,7 @@ function main {
 		build_installer
 	} elseif ($check_upgrade) {
 		check_upgrade
-	} elseif ($install -or $install_release) {
+	} elseif ($install) {
 		install_deps
 		if ((check_import "import PyQt5") -ne 1) {
 			Write-Output ">>> No PyQt5. Installation failed."
