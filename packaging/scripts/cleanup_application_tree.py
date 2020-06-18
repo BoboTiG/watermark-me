@@ -1,16 +1,17 @@
 # coding: utf-8
 """
 Remove files from the package that are not needed and too big.
-This script can be launched after PyInstaller and before the DMG or EXE creation.
+This script can be launched after PyInstaller and before installers creation.
+
+Source: https://github.com/nuxeo/nuxeo-drive/blob/master/tools/cleanup_application_tree.py
 """
 import os
 import shutil
 import sys
 from pathlib import Path
-from typing import Generator, List, Set
+from typing import Generator, List, Tuple
 
-
-FILES: Set[str] = {
+FILES: Tuple[str] = (
     "PyQt*/Qt/lib",  # Contains only WebEngineCore.framework on macOS
     "PyQt*/Qt/plugins/mediaservice",
     "PyQt*/Qt/plugins/position",
@@ -28,6 +29,7 @@ FILES: Set[str] = {
     "PyQt*/Qt/qml/QtMultimedia",
     "PyQt*/Qt/qml/QtNfc",
     "PyQt*/Qt/qml/QtPositioning",
+    "PyQt*/Qt/qml/QtQml/RemoteObjects",
     "PyQt*/Qt/qml/QtQuick/Controls.2/designer",
     "PyQt*/Qt/qml/QtQuick/Extras/designer",
     "PyQt*/Qt/qml/QtQuick/Particles.2",
@@ -48,16 +50,13 @@ FILES: Set[str] = {
     "PyQt*/Qt/translations/qtmultimedia*",
     "PyQt*/Qt/translations/qtserialport*",
     "PyQt*/QtBluetooth.*",
-    "PyQt*/QtDBus.*",
+    # "PyQt*/QtDBus.*",
     "PyQt*/QtDesigner.*",
     "PyQt*/QtHelp.*",
     "PyQt*/QtLocation.*",
     "PyQt*/QtMacExtras.*",
     "PyQt*/QtMultimedia*.*",
     "PyQt*/QtNfc.*",
-    "PyQt*/QtNetwork.*",
-    "PyQt*/QtQml.*",
-    "PyQt*/QtQuick.*",
     "PyQt*/QtSql.*",
     "PyQt*/QtWebChannel.*",
     "PyQt*/QtWebEngine*.*",
@@ -66,19 +65,17 @@ FILES: Set[str] = {
     "PyQt*/QtXml.*",
     "*Qt*Bluetooth*",
     "*Qt*Concurrent*",
-    "*Qt*DBus*",
+    # "*Qt*DBus*",
     "*Qt*Designer*",
     "*Qt*Help*",
     "*Qt*Location*",
     "*Qt*MacExtras*",
     "*Qt*Multimedia*",
     "*Qt*Nfc*",
-    "*Qt*Network*",
-    "*Qt*Qml*",
-    "*Qt*Quick*",
     "*Qt*Positioning*",
     "*Qt*QuickParticles*",
     "*Qt*QuickTest*",
+    "*Qt*RemoteObjects*",
     "*Qt*Sensors*",
     "*Qt*SerialPort*",
     "*Qt*Sql*",
@@ -89,23 +86,22 @@ FILES: Set[str] = {
     "*Qt*WinExtras*",
     "*Qt*Xml*",
     "*Qt*XmlPatterns*",
-}
+)
 
 
 def find_useless_files(folder: Path) -> Generator[Path, None, None]:
     """Recursively yields files we want to remove."""
     for pattern in FILES:
-        for path in folder.glob(pattern):
-            yield path
+        yield from folder.glob(pattern)
 
 
 def main(args: List[str]) -> int:
     """
-    Purge uneeded files from the packaged application.
+    Purge unneeded files from the packaged application.
     Take one or more folder arguments: "ndrive", "Nuxeo Drive.app".
     """
     for folder in args:
-        print(f">>> [{folder}] Purging uneeded files")
+        print(f">>> [{folder}] Purging unneeded files")
         for file in find_useless_files(Path(folder)):
             if file.is_dir():
                 shutil.rmtree(file)
