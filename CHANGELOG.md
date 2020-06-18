@@ -2,7 +2,7 @@
 
 ## 0.1b5
 
-Release date: `2020-xx-xx`
+Release date: `2020-06-18`
 
 - Packaging: include Tendo metadata to fix PyInstaller runtime (fixes #75)
 - Packaging: now using Python to 3.8.3
