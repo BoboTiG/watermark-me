@@ -54,7 +54,7 @@ Executing the script without argument will setup.update the isolated environment
 
 [//]: # (XXX_PYTHON, XXX_INNO_SETUP)
 
-- [Python 3.8.1](https://www.python.org/ftp/python/3.8.1/python-3.8.1.exe).
+- [Python 3.8.3](https://www.python.org/ftp/python/3.8.3/python-3.8.3.exe).
 - [Inno Setup 6.0.2](http://www.jrsoftware.org/isdl.php) to create the installer.
 
 ### Troubleshooting
@@ -104,5 +104,5 @@ Those are related to code-signing:
 
 - `APP_NAME` is the **application name** used for code sign, i.e. `Nuxeo Drive`.
 - `ISCC_PATH` is the **Inno Setup path** to use, i.e. `C:\Program Files (x86)\Inno Setup 6`.
-- `PYTHON_DIR` is the **Python path** to use, i.e. `C:\Python37-32`.
+- `PYTHON_DIR` is the **Python path** to use, i.e. `C:\Python38-32`.
 - `SIGNTOOL_PATH` is the **SignTool path** to use, i.e. `C:\Program Files (x86)\Windows Kits\10\App Certification Kit`.

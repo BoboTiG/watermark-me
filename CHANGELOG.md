@@ -4,6 +4,7 @@
 
 Release date: `2020-xx-xx`
 
+- Packaging: now using Python to 3.8.3
 - Packaging: now using PyQt to 5.15.0
 
 ## 0.1b4
