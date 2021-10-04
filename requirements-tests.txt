@@ -1,5 +1,5 @@
 pillow==8.3.2
 pyyaml==5.4.1
 pytest==6.2.5
-pytest-cov==2.12.1
+pytest-cov==3.0.0
 tinify==1.5.2
