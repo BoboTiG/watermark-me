@@ -1,4 +1,4 @@
-pillow==8.3.2
+pillow==8.4.0
 pyqt5==5.15.4
 pyyaml==6.0
 tendo==0.2.15
