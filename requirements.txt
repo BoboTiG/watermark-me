@@ -1,5 +1,5 @@
 pillow==8.4.0
-pyqt5==5.15.4
+pyqt5==5.15.5
 pyyaml==6.0
 tendo==0.2.15
 tinify==1.5.2
